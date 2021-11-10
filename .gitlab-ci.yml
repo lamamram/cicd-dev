@@ -9,11 +9,12 @@ test:
   script:
     - echo "Test"
 
-# désactiver un job en préfixant par "."
+test2:
+  stage: tests
+  script:
+    - echo "Test2"
+
 build:
   stage: builds
-  # clé pour placer des commandes de préparation du job
-  # before_script:
-  #   - apt-get install -y mcs
   script:
     - xbuild build.csproj

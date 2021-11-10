@@ -1,15 +1,19 @@
 image: "$CI_REGISTRY_IMAGE/alpine-mono"
 
+# ordre d'exécution de groupes de jobs
 stages:
   - builds
   - tests
 
 test:
+  # le job appartient au stage "tests", exécuté
+  # quand tous les jobs de builds ont terminé
   stage: tests
   script:
     - echo "Test"
 
 test2:
+  # dans le stage "tests" les jobs sont exécutés en parallèle
   stage: tests
   script:
     - echo "Test2"

@@ -1,0 +1,16 @@
+# job
+build:
+  # le job contient un script == une liste de commandes
+  script:
+    - echo "Build !"
+
+test:
+  script:
+    - echo "Test !"
+# équivalent à 
+# {
+#   "test": {
+#     "script": ["echo 'Test !'"]
+#   }
+# }
+# {"test":{"script":["echo 'Test !'"]}}

@@ -5,9 +5,9 @@
 # pour accélerer les pipelines
 image: "$CI_REGISTRY_IMAGE/alpine-mono"
 
-.test:
+test:
   script:
-    - echo "$CI_REGISTRY_IMAGE"
+    - echo "Test"
 
 # désactiver un job en préfixant par "."
 build:
@@ -16,4 +16,3 @@ build:
   #   - apt-get install -y mcs
   script:
     - xbuild build.csproj
-    - ls -al

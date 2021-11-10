@@ -1,23 +1,7 @@
-# job
-build:
-  # le job contient un script == une liste de commandes
-script:
-    # 3 commandes sur plusieurs lignes
-    - |
-      echo "Build "
-      echo "En "
-      echo "Cours !"
-
+# ajout de l'image mono permettant de compiler du cs
+# et d'exécuter des .exe dans un contexte linux
 test:
-  scridpt:
-    # une seule longue commande écrite sur plusieurs
-    - >
-      echo "Test en cours d'exécution sur un conteneur " 
-      && echo "Docker piloté par gitlab-runner" 
-# équivalent à 
-# {
-#   "test": {
-#     "script": ["echo 'Test !'"]
-#   }
-# }
-# {"test":{"script":["echo 'Test !'"]}}
+  image: mono:slim
+  script:
+    - mcs hello.cs
+    - mono hello.exe

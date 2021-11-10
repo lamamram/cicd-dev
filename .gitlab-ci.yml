@@ -11,3 +11,4 @@ build:
   #   - apt-get install -y mcs
   script:
     - xbuild build.csproj
+    - ls -al

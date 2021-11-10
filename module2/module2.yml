@@ -1,0 +1,19 @@
+# pipeline enfant
+image: "$CI_REGISTRY_IMAGE/alpine-mono"
+
+# ordre d'exécution de groupes de jobs
+stages:
+  - builds
+  - tests
+
+test2:
+  # dans le stage "tests" les jobs sont exécutés en parallèle
+  stage: tests
+  script:
+    - echo "Test2"
+
+build2:
+  stage: builds
+  script:
+    - sleep 5
+    - echo "Build"

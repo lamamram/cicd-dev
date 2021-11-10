@@ -1,31 +1,13 @@
-image: "$CI_REGISTRY_IMAGE/alpine-mono"
-
-# ordre d'exécution de groupes de jobs
+# pipeline parent
 stages:
-  - builds
-  - tests
+  - triggers
 
-test:
-  stage: tests
-  # test ne dépend que de build, il peut s'exécuter dès que
-  # build a terminé indépendamment du stage builds
-  needs: [build]
-  script:
-    - echo "Test"
+trigger1:
+  stage: triggers
+  trigger:
+    include: module1/module1.yml
 
-test2:
-  # dans le stage "tests" les jobs sont exécutés en parallèle
-  stage: tests
-  script:
-    - echo "Test2"
-
-build:
-  stage: builds
-  script:
-    - xbuild build.csproj
-
-build2:
-  stage: builds
-  script:
-    - sleep 5
-    - echo "Build"
+trigger2:
+  stage: triggers
+  trigger:
+    include: module2/module2.yml

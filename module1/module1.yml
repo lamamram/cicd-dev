@@ -1,0 +1,20 @@
+# pipeline enfant
+image: "$CI_REGISTRY_IMAGE/alpine-mono"
+
+# ordre d'exécution de groupes de jobs
+stages:
+  - builds
+  - tests
+
+test:
+  stage: tests
+  # test ne dépend que de build, il peut s'exécuter dès que
+  # build a terminé indépendamment du stage builds
+  needs: [build]
+  script:
+    - echo "Test"
+
+build:
+  stage: builds
+  script:
+    - echo "Build"

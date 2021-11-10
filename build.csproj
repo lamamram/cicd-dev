@@ -3,6 +3,7 @@
     <Compile Include="hello.cs" />
   </ItemGroup>
   <Target Name="Build">
-    <Csc Sources="@(Compile)"/>  
+    <Csc Sources="@(Compile)"/>
+    <TargetName>myusine</TargetName>
   </Target>
 </Project>

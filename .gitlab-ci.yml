@@ -6,9 +6,10 @@ stages:
   - tests
 
 test:
-  # le job appartient au stage "tests", exécuté
-  # quand tous les jobs de builds ont terminé
   stage: tests
+  # test ne dépend que de build, il peut s'exécuter dès que
+  # build a terminé indépendamment du stage builds
+  needs: [build]
   script:
     - echo "Test"
 
@@ -22,3 +23,9 @@ build:
   stage: builds
   script:
     - xbuild build.csproj
+
+build2:
+  stage: builds
+  script:
+    - sleep 5
+    - echo "Build"

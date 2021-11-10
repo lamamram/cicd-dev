@@ -5,7 +5,12 @@
 # pour accélerer les pipelines
 image: gitlab.myusine.fr:5050/root/myusine/alpine-mono
 
-build:
+test:
+  script:
+    - echo "$CI_REGISTRY_IMAGE"
+
+# désactiver un job en préfixant par "."
+.build:
   # clé pour placer des commandes de préparation du job
   # before_script:
   #   - apt-get install -y mcs

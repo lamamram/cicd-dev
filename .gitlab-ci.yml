@@ -1,16 +1,17 @@
-# ajout de l'image mono permettant de compiler du cs
-# et d'exécuter des .exe dans un contexte linux
-# image par défaut des jobs du pipeline
-# image transférée sur le registre d'image de gitlab 
-# pour accélerer les pipelines
 image: "$CI_REGISTRY_IMAGE/alpine-mono"
 
+stages:
+  - builds
+  - tests
+
 test:
+  stage: tests
   script:
     - echo "Test"
 
 # désactiver un job en préfixant par "."
 build:
+  stage: builds
   # clé pour placer des commandes de préparation du job
   # before_script:
   #   - apt-get install -y mcs

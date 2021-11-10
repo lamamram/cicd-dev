@@ -1,13 +1,63 @@
-# pipeline parent
+image: "$CI_REGISTRY_IMAGE/alpine-mono"
+
+variables:
+  TRIGGER_TEST: "on"
+
+# règles de déclenchement du pipeline
+workflow:
+  rules:
+    # clause if: évalue une condition booléenne
+    # les valeurs litérales sont des chaines de caractères
+    # le pipeline s'executera si au moins une règle est vrai
+    # OU logique
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 stages:
-  - triggers
+  - builds
+  - tests
+  - deploys
 
-trigger1:
-  stage: triggers
-  trigger:
-    include: module1/module1.yml
+test:
+  stage: tests
+  script:
+    - echo "Test"
+  rules:
+    - if: >
+          $CI_COMMIT_BRANCH == "master" 
+          && $TRIGGER_TEST == "on"
+      when: always
 
-trigger2:
-  stage: triggers
-  trigger:
-    include: module2/module2.yml
+test2:
+  stage: tests
+  script:
+    - echo "Test2"
+  rules:
+    # la règle sera vrai si toutes les clauses sont vraies
+    # ET logique
+    - if: $CI_COMMIT_BRANCH != "master"
+      changes:
+        - "README*"
+
+build:
+  stage: builds
+  script:
+    - xbuild build.csproj
+  rules:
+    - if: $CI_COMMIT_BRANCH !~ /feature[0-9]+/
+
+build2:
+  stage: builds
+  script:
+    - echo "test"
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /feature[0-9]+/
+
+
+deploy:
+  stage: deploys
+  script:
+    - echo "Deploy"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual

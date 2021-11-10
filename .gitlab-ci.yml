@@ -2,11 +2,18 @@
 build:
   # le job contient un script == une liste de commandes
   script:
-    - echo "Build !"
+    # 3 commandes sur plusieurs lignes
+    - |
+      echo "Build "
+      echo "En "
+      echo "Cours !"
 
 test:
   script:
-    - echo "Test !"
+    # une seule longue commande écrite sur plusieurs
+    - >
+      echo "Test en cours d'exécution sur un conteneur " 
+      && echo "Docker piloté par gitlab-runner" 
 # équivalent à 
 # {
 #   "test": {

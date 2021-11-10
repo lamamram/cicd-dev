@@ -1,7 +1,7 @@
 # job
 build:
   # le job contient un script == une liste de commandes
-  script:
+script:
     # 3 commandes sur plusieurs lignes
     - |
       echo "Build "
@@ -9,7 +9,7 @@ build:
       echo "Cours !"
 
 test:
-  script:
+  scridpt:
     # une seule longue commande écrite sur plusieurs
     - >
       echo "Test en cours d'exécution sur un conteneur " 

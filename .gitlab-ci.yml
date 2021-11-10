@@ -1,7 +1,9 @@
 # ajout de l'image mono permettant de compiler du cs
 # et d'exécuter des .exe dans un contexte linux
 test:
-  image: mono:slim
+  image: frolvlad/alpine-mono
+  # before_script:
+  #   - apt-get install -y mcs
   script:
     - mcs hello.cs
     - mono hello.exe

@@ -1,7 +1,12 @@
 # ajout de l'image mono permettant de compiler du cs
 # et d'exécuter des .exe dans un contexte linux
+# image par défaut des jobs du pipeline
+# image transférée sur le registre d'image de gitlab 
+# pour accélerer les pipelines
+image: gitlab.myusine.fr:5050/root/myusine/alpine-mono
+
 test:
-  image: frolvlad/alpine-mono
+  # clé pour placer des commandes de préparation du job
   # before_script:
   #   - apt-get install -y mcs
   script:

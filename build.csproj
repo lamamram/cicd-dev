@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetName>myusine</TargetName>
+    <AssemblyName>myusine</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="hello.cs" />

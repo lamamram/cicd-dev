@@ -35,6 +35,9 @@ create_env:
     - if: $TRIGGER_CACHE == "on"
 
 test:
+  # debug gitlab ci
+  variables:
+    CI_DEBUG_TRACE: "true"
   stage: tests
   script:
     - source venv/bin/activate

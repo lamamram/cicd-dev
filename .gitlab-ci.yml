@@ -35,6 +35,18 @@ test:
   script:
     # disponibilité des artefacts dans les jobs aval
     - cat artifacts/artifact
+    - echo "test artifact" > test_artifact
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - test_artifact
 
+deploy:
+  stage: deploys
+  script:
+    - cat test_artifact
+    - cat artifacts/artifact
+  dependencies: [test]
+  
 
 

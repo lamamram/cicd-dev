@@ -10,6 +10,7 @@ stages:
 
 # génération des dépendances projet
 create_env:
+  stage: .pre
   before_script:
     # création du dossier de dépendances "venv"
     - python3 -m venv venv

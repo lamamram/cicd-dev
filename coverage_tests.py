@@ -3,6 +3,7 @@ import unittest
 # import HtmlTestRunner
 import xmlrunner
 import bank.tests
+import sys
 
 def module_tests():
     suite, loader = unittest.TestSuite(), unittest.TestLoader()
@@ -19,6 +20,7 @@ if __name__ == "__main__":
     # runner = HtmlTestRunner.HTMLTestRunner(output='example_dir')
     # rapport xml au format junit déposé dans un dossier spécique
     runner = xmlrunner.XMLTestRunner(output='reports')
-    ret = runner.run(module_tests())
-    print(ret)
+    # runner.run(module_tests())
+    ret = not runner.run(module_tests()).wasSuccessful()
+    sys.exit(ret)
 

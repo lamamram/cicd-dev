@@ -39,7 +39,10 @@ test:
   script:
     - source venv/bin/activate
     - python3 coverage_tests.py
-    - ls -al reports
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - reports/
   cache:
     key: venv
     untracked: true

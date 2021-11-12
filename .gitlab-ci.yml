@@ -37,7 +37,8 @@ create_env:
 test:
   stage: tests
   script:
-    - test -e venv
+    - source venv/bin/activate
+    - python3 -m unittest bank.tests
   cache:
     key: venv
     untracked: true

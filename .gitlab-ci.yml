@@ -35,7 +35,7 @@ create_env:
     - changes:
         - requirements.txt
     # déclenchement manuel
-    - if: $TRIGGER_CACHE == "on"
+    - if: $TRIGGER_CACHE == "off"
 
 test:
   # debug gitlab ci

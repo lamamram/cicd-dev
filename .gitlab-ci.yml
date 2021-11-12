@@ -41,12 +41,14 @@ test:
   stage: tests
   script:
     - source venv/bin/activate
-    - coverage run --include="bank/*.py" --omit="**/tests/*,**/__init__.py" coverage_tests.py
+    - coverage run --include="bank/*.py" --omit="**/tests/*.py,**/__init__.py" coverage_tests.py
     - coverage report
+    - coverage xml -o reports/coverage.xml
   artifacts:
     expire_in: 1 hour
     reports:
       junit: "reports/TEST-*.xml"
+      cobertura: reports/coverage.xml
   cache:
     key: venv
     untracked: true

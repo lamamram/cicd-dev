@@ -44,3 +44,4 @@ class Account:
 
     def __updateOverdraft(self):
         self.overdraft = bool(self.__balance < 0)
+

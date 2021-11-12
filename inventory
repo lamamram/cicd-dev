@@ -1,0 +1,17 @@
+# définition des machines distantes
+# <label> ansible_host=<ip_adrress|hostname>
+staging ansible_host=172.17.0.1
+# preprod ansible_host=preprod.myusine.fr
+# prod ansible_host=www.myusine.fr
+
+# groupes de machines
+[dev]
+staging
+# preprod
+[prod]
+# prod
+
+# variables attachées à un groupe
+[dev:vars]
+env_user=ansible
+ansible_python_interpreter=/usr/bin/python3

@@ -1,10 +1,6 @@
-# ignorer fichier
-.tmp
-# ignorer dossier et contenu
-.vscode/ 
-# ignorer ce qui commence par b à la racine de .vscode
-# .vscode/b*
-# ignorer ce qui commence par b à travers .vscode et ses sous dossiers
-# .vscode/**/b*
-# exception à une règle plus haut
-# !.vscode/boris
+venv/
+__pycache__/
+reports/
+.vscode/
+.coverage
+.scannerwork/

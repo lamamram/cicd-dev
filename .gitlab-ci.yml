@@ -1,7 +1,4 @@
-image: "$CI_REGISTRY_IMAGE/alpine-mono"
-
-variables:
-  TRIGGER_TEST: "on"
+image: "$CI_REGISTRY_IMAGE/python:rc-slim-buster"
 
 workflow:
   rules:
@@ -9,46 +6,24 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 stages:
-  - builds
   - tests
-  - deploys
 
-# ".cahce": job désactivé
-# "&cache_deps": nom de l'objet YAML
-.cache: &cache_deps
-  key: deps
-  # pour éviter un "git clean"
-  untracked: true
-  policy: pull
-
-build:
-  stage: builds
+# génération des dépendances projet
+create_env:
+  before_script:
+    # création du dossier de dépendances "venv"
+    - python3 -m venv venv
+    # activation de l'environnement virtuel
+    - source venv/bin/activate
   script:
-    # production d'un cache
-    - mkdir dependencies
-    - echo "dependency content" > dependencies/dependency
-  # génération d'un cache
-  cache:
-    # ancre YAML: injection de l'alias + ajouts / modifications
-    <<: *cache_deps
-    paths:
-      - dependencies/
-    policy: push
+    # installation des dépendances dans l'environnement virtuel
+    - pip3 install -r requirements.txt
 
 test:
   stage: tests
   script:
-    - cat dependencies/dependency
-  # installation du cache "deps"
-  # "*cache_deps" : alias de "&cache_deps"
-  cache: *cache_deps
+    - test -e venv
 
-deploy:
-  stage: deploys
-  script:
-    - cat dependencies/dependency
-  # installation du cache "deps"
-  cache: *cache_deps
 
   
 

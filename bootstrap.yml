@@ -1,0 +1,63 @@
+---
+  # structure du playbook (nom, cible, utilisateur)
+  - name: BOOTSTRAP
+    hosts: dev
+    remote_user: "{{ env_user }}"
+    
+    # taches du playbook
+    tasks:
+      - name: BOOTSTRAP | Check Python Install
+        # raw execute une commande
+        raw: test -e /usr/bin/python
+        # on notifie que la tache ne modifie pas l'etat de la cible
+        changed_when: false
+        # on notifie qu'un code de retour en erreur ne signifie pas l'echec du playbook
+        failed_when: false
+        # on enregistre le resutat de la commande dans la variable "check_python" creee a cet effet
+        register: check_python
+
+      - name: BOOTSTRAP | Install Python
+        # manipulation d'apt en yml
+        apt:
+          name: python
+          # present -> apt install, absent -> apt remove
+          state: present
+          # apt update prealable
+          update_cache: yes
+        # condition d'execution de la tache (rc = return code), ansible_os_family est un "fact" 
+        # recupere par ansible via le module setup
+        when: ansible_os_family == 'Debian' and check_python.rc != 0
+        # apt s'exécute en admin via sudo
+        become: yes
+        become_method: sudo
+
+      - name: "BOOTSTRAP | Check {{ item.cmd }} Install"
+        raw: "test -e /usr/bin/{{ item.cmd }}"
+        changed_when: false
+        failed_when: false
+        # enregistrement des retours des commandes de la boucle
+        register: installs
+        # iteration de la tache sur plusieurs valeurs placees dans la variable "item": ici des objets
+        loop:
+          - cmd: python3
+            package: python3
+          - cmd: pip3
+            package: python3-pip
+      
+      # debug d'une variable
+      - name: TEST | valeur de retour de boucle
+        debug:
+          var: installs
+
+      - name: "BOOTSTRAP | Install {{ item.item.cmd }}"
+        # manipulation d'apt en yml
+        apt:
+          name: "{{ item.item.package }}"
+          state: present
+          update_cache: yes
+        when: "{{ item.rc }} != 0"
+        # on itere sur les objets retounes par la boucle precedente
+        loop: "{{ installs.results }}"
+        # demander une augmentation de droits, en sudo, mais pas de prompt pour entrer un mot de passe
+        become: yes
+        become_method: sudo

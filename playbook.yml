@@ -1,0 +1,52 @@
+---
+
+  - import_playbook: bootstrap.yml
+  
+  - name: DEPLOY | Deploy project on target
+    hosts: dev
+    remote_user: "{{ env_user }}"
+    # variables globales au playbook
+    vars:
+      files:
+        - bank
+        - models
+        - static
+        - views
+        - app.py
+        - requirements.txt
+    
+    tasks:
+      # tuer le process en arrière plan s'il existe
+      # s'il n'existe pas, autoriser le code de retour en erreur
+      - name: DEPLOY | kill app process
+        shell: pkill -f app.py
+        failed_when: false
+
+      - name: DEPLOY | create project directory if not exists
+        file:
+          path: "/home/{{ env_user }}/staging"
+          state: directory
+          mode: 0755
+      
+      # le module copy est idempotent
+      - name: DEPLOY | copy code to target
+        copy:
+          src: "./{{ item }}"
+          dest: "/home/{{ env_user }}/staging"
+        loop: "{{ files }}"
+      
+      # bien renseigner la conf ansible_python_interpreter=/usr/bin/python3
+      # pour utiliser pip3
+      - name: DEPLOY | install dependencies
+        pip:
+          requirements: /home/{{ env_user }}/staging/requirements.txt
+          state: present
+          executable: pip3
+      
+      # on déplace le prompt dans staging pour lancer app
+      # de façon à respecter les chemin d'import python
+      # lancer l'app en background et rendre le prompt à ansible avec &
+      - name: DEPLOY | launch app
+        shell: 
+          chdir: /home/{{ env_user }}/staging
+          cmd: nohup python3 app.py &

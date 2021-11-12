@@ -19,11 +19,20 @@ create_env:
   script:
     # installation des dépendances dans l'environnement virtuel
     - pip3 install -r requirements.txt
+  cache:
+    key: venv
+    paths:
+      - venv
+    policy: push
 
 test:
   stage: tests
   script:
     - test -e venv
+  cache:
+    key: venv
+    untracked: true
+    policy: pull
 
 
   

@@ -3,13 +3,8 @@ image: "$CI_REGISTRY_IMAGE/alpine-mono"
 variables:
   TRIGGER_TEST: "on"
 
-# règles de déclenchement du pipeline
 workflow:
   rules:
-    # clause if: évalue une condition booléenne
-    # les valeurs litérales sont des chaines de caractères
-    # le pipeline s'executera si au moins une règle est vrai
-    # OU logique
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
@@ -21,32 +16,27 @@ stages:
 build:
   stage: builds
   script:
-    # production d'un artefact
-    - mkdir artifacts
-    - echo "artifact content" > artifacts/artifact
-  # prélèvement de l'artefact
-  artifacts:
-    expire_in: 1 hour
+    # production d'un cache
+    - mkdir dependencies
+    - echo "dependency content" > dependencies/dependency
+  # génération d'un cache
+  cache:
+    key: deps
     paths:
-      - artifacts/
+      - dependencies/
+    policy: push
 
 test:
   stage: tests
   script:
-    # disponibilité des artefacts dans les jobs aval
-    - cat artifacts/artifact
-    - echo "test artifact" > test_artifact
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - test_artifact
+    - cat dependencies/dependency
+  # installation du cache "deps"
+  cache:
+    key: deps
+    # pour éviter un "git clean"
+    untracked: true
+    policy: pull
 
-deploy:
-  stage: deploys
-  script:
-    - cat test_artifact
-    - cat artifacts/artifact
-  dependencies: [test]
   
 
 

@@ -47,7 +47,7 @@ test:
     # paths:
     #   - reports/
     reports:
-      junit: "reports/Test-*.xml"
+      junit: "reports/TEST-*.xml"
   cache:
     key: venv
     untracked: true

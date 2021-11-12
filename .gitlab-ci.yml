@@ -13,6 +13,14 @@ stages:
   - tests
   - deploys
 
+# ".cahce": job désactivé
+# "&cache_deps": nom de l'objet YAML
+.cache: &cache_deps
+  key: deps
+  # pour éviter un "git clean"
+  untracked: true
+  policy: pull
+
 build:
   stage: builds
   script:
@@ -21,7 +29,8 @@ build:
     - echo "dependency content" > dependencies/dependency
   # génération d'un cache
   cache:
-    key: deps
+    # ancre YAML: injection de l'alias + ajouts / modifications
+    <<: *cache_deps
     paths:
       - dependencies/
     policy: push
@@ -31,11 +40,15 @@ test:
   script:
     - cat dependencies/dependency
   # installation du cache "deps"
-  cache:
-    key: deps
-    # pour éviter un "git clean"
-    untracked: true
-    policy: pull
+  # "*cache_deps" : alias de "&cache_deps"
+  cache: *cache_deps
+
+deploy:
+  stage: deploys
+  script:
+    - cat dependencies/dependency
+  # installation du cache "deps"
+  cache: *cache_deps
 
   
 

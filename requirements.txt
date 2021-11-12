@@ -18,5 +18,5 @@ selenium==3.141.0
 toml==0.10.2
 unittest-xml-reporting==3.0.4
 urllib3==1.26.3
-wrapt==1.12.1
+# wrapt==1.12.1
 

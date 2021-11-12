@@ -24,6 +24,9 @@ create_env:
     paths:
       - venv
     policy: push
+  rules:
+    - changes:
+        - requirements.txt
 
 test:
   stage: tests

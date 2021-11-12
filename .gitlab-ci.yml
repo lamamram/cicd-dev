@@ -42,7 +42,7 @@ test:
   script:
     - source venv/bin/activate
     - coverage run coverage_tests.py
-    - coverage report -m
+    - coverage report
   artifacts:
     expire_in: 1 hour
     reports:

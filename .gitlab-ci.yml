@@ -41,11 +41,10 @@ test:
   stage: tests
   script:
     - source venv/bin/activate
-    - python3 coverage_tests.py
+    - coverage run coverage_tests.py
+    - covrage report -m
   artifacts:
     expire_in: 1 hour
-    # paths:
-    #   - reports/
     reports:
       junit: "reports/TEST-*.xml"
   cache:

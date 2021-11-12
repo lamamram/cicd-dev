@@ -41,7 +41,7 @@ test:
   stage: tests
   script:
     - source venv/bin/activate
-    - coverage run coverage_tests.py
+    - coverage run --include="bank/*.py" --omit="**/tests/*,**/__init__.py" coverage_tests.py
     - coverage report
   artifacts:
     expire_in: 1 hour

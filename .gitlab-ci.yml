@@ -1,7 +1,7 @@
 image: "$CI_REGISTRY_IMAGE/python:rc-slim-buster"
 
 variables:
-  TRIGGER_CACHE: "off"
+  TRIGGER_CACHE: "on"
 
 workflow:
   rules:

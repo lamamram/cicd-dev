@@ -1,5 +1,8 @@
 image: "$CI_REGISTRY_IMAGE/python:rc-slim-buster"
 
+variables:
+  TRIGGER_CACHE: "off"
+
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -25,8 +28,11 @@ create_env:
       - venv
     policy: push
   rules:
+    # déclenchement auto
     - changes:
         - requirements.txt
+    # déclenchement manuel
+    - if: $TRIGGER_CACHE == "on"
 
 test:
   stage: tests

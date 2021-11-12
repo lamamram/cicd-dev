@@ -1,7 +1,7 @@
 image: "$CI_REGISTRY_IMAGE/python:rc-slim-buster"
 
 variables:
-  TRIGGER_CACHE: "off"
+  TRIGGER_CACHE: "on"
 
 workflow:
   rules:
@@ -13,6 +13,9 @@ stages:
 
 # génération des dépendances projet
 create_env:
+  # rendre le cache disponible dans 2 threads exécutés en parallèle
+  # pour les jobs parallèles tests et e2e
+  parallel: 2
   stage: .pre
   before_script:
     # création du dossier de dépendances "venv"
@@ -54,7 +57,23 @@ test:
     untracked: true
     policy: pull
 
-
+e2e:
+  # serveur selenium à la demande
+  services:
+    - name: selenium/standalone-firefox:latest
+      alias: gitlab_selenium_server
+  stage: tests
+  # rendre le driver acessible au client
+  # ==> mise dans le PATH et driver exécutable
+  before_script:
+    - cp geckodriver /usr/bin/
+    - chmod +x /usr/bin/geckodriver
+  script:
+    - python3 e2e_remote.py
+  cache:
+    key: venv
+    untracked: true
+    policy: pull
   
 
 

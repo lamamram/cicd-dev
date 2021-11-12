@@ -66,6 +66,7 @@ e2e:
   # rendre le driver acessible au client
   # ==> mise dans le PATH et driver exécutable
   before_script:
+    - source venv/bin/activate
     - cp geckodriver /usr/bin/
     - chmod +x /usr/bin/geckodriver
   script:

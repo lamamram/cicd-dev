@@ -7,7 +7,7 @@ class TestClient(unittest.TestCase):
         self.client = Client(1)
     
     def testFullName(self):
-        self.assertEqual("Michel LEFEBVRE", self.client.get_full_name())
+        self.assertEqual("Michel LEfFEBVRE", self.client.get_full_name())
     
 if __name__ == "__main__":
     unittest.main()

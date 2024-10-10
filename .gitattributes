@@ -1,0 +1,7 @@
+*.sh eol=lf
+*.yml eol=lf
+*.php eol=lf
+*.py eol=lf
+*.java eol=lf
+*.json eol=lf
+Vagrantfile eol=lf

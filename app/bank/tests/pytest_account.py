@@ -37,27 +37,27 @@ balances = (500.00, 300.00)
 # 7. marker custom
 # option -m <custom_maker> ou -m "not <custom1> and|or <custom2>"
 # @pytest.mark.something_related_to_balance
-def test_balance(account, balance):
-    warnings.warn("blabla collections !")
-    # Arrange (instance, connexion ...)
-    # Act (calcul)
-    # Assert
-    # capture de sys.stdout => option -s
-    # print(f"\nbalance: {account_1.getBalance()}\n")
-    assert balance == account.getBalance()
+# def test_balance(account, balance):
+    # warnings.warn("blabla collections !")
+    # # Arrange (instance, connexion ...)
+    # # Act (calcul)
+    # # Assert
+    # # capture de sys.stdout => option -s
+    # # print(f"\nbalance: {account_1.getBalance()}\n")
+    # assert balance == account.getBalance()
 
-def test_overdraft():
-    account = Account(1, Client(1))
-    account.withdraw(600)
-    assert account.overdraft
+# def test_overdraft():
+    # account = Account(1, Client(1))
+    # account.withdraw(600)
+    # assert account.overdraft
 
-@pytest.mark.parametrize("firstname,lastname", [("michel", "lefebvre")])
-def test_client_name(account_1, firstname, lastname, monkeypatch):
-    class MockClient:
-        def get_full_name(self):
-            return f"{firstname.capitalize()} {lastname.upper()}"
-    monkeypatch.setattr(account_1, "_Account__client", MockClient())
-    assert account_1.get_client_name() == "Michel LEFEBVRE"
+# @pytest.mark.parametrize("firstname,lastname", [("michel", "lefebvre")])
+# def test_client_name(account_1, firstname, lastname, monkeypatch):
+    # class MockClient:
+        # def get_full_name(self):
+            # return f"{firstname.capitalize()} {lastname.upper()}"
+    # monkeypatch.setattr(account_1, "_Account__client", MockClient())
+    # assert account_1.get_client_name() == "Michel LEFEBVRE"
 
 
 

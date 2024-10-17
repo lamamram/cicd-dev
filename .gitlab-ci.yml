@@ -1,5 +1,52 @@
+# {
+#   "generate-deps": {
+#     "tags": [
+#       "myusine"
+#     ],
+#     "script": ["echo \"deps\""]
+#   }
+# }
+# image par défaut de tous le jobs
+# image docker pour python
+image: python:3.11.10-slim-bookworm
+
+# étapes du pipeline dans l'ordre de la liste
+stages:
+  - init
+  - testing
+#   - quality
+
+
+generate-deps:
+  # YAML compatible JSON !
+  tags: [myusine]
+  stage: init
+  script:
+    # on installe l'environnement virtuel là où on est
+    - python3 -m venv ./venv
+    - source ./venv/bin/activate
+    - pip3 install -r app/requirements.txt
+    - pip3 install -r app/requirements-dev.txt
+  # uploader le dossier ./venv dans la VM
+  cache:
+    # nom du cache (volume docker)
+    key: virtual-env 
+    # localisation du dossier pour l'uploader
+    paths:
+      - ./venv
+    policy: push
+
 test:
+  stage: testing
   tags:
     - myusine
   script:
-    - echo "SCRUM BIEN COMPRIS !!!"
+    - source ./venv/bin/activate
+    - cd app
+    - pytest
+  cache:
+    key: virtual-env
+    # gitlab-runner exécute 'git clean' APRES le cache
+    # donc on utilise la clé untracked pour obliger gitlab-runner de laisser le cache !!!
+    untracked: true
+    policy: pull

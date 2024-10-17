@@ -8,9 +8,11 @@
 # }
 
 # règles globales du pipeline
-# workflow:
-#   rules:
-#     - 
+workflow:
+  # utilisation d'une variable d'environnment prédéfinies par Gitlab: 
+  # https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
 
 # image par défaut de tous le jobs
 # image docker pour python
@@ -52,7 +54,7 @@ generate-deps:
     - changes: 
         - app/requirements.txt
         - app/requirements-dev.txt
-    - if: $TRIGGER_CACHE == "on"
+    - if: $TRIGGER_CACHE == "off"
       # par défaut on_success: on exécute si les jobs précédents en succes
       # on_failure: on exécute si un job précédent et en erreur
       when: on_success
@@ -64,10 +66,21 @@ test:
   script:
     - source ./venv/bin/activate
     - cd app
-    - pytest
+    - pytest --junit-xml=./units.xml
   cache:
     key: virtual-env
     # gitlab-runner exécute 'git clean' APRES le cache
     # donc on utilise la clé untracked pour obliger gitlab-runner de laisser le cache !!!
     untracked: true
     policy: pull
+  # artifacts fait remonter les éléments spécifiés dans paths: et
+  # 1. rend les éléments disponibles auto. dans les jobs suivants
+  # 2. en téléchargement
+  artifacts:
+    # ATTENTION: "untracked" ici va prélever TOUS les chemins de type untracked !!!!!!
+    expire_in: "1 hour"
+    paths:
+      - ./app/units.xml
+    # rappots spéciaux liés à des formats compatibles Gitlab => pour la data-visualisation
+    reports:
+      junit: ./app/units.xml

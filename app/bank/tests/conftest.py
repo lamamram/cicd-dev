@@ -19,9 +19,16 @@ from bank.client import Client
 # en injectant toutà tour les valeur dans l'attribut param
 # de l'objet de contexte request
 
+
+## jeu de données parametrisé !!!
 account_set = [
     (Account(k, Client(k)), b) for k,b in {1: 500.00, 2: 300.00}.items()
 ]
+
+## FIXTURE: est une ressource installée dans les cas de tests => pour l'étape Arrange
+# but => servir un jeu données pour confirmer la validité de la feature dans tous les cas !!!
+# ressrouce => objet, fichier de données (csv, json), bdd 
+
 
 # @pytest.fixture(scope="module", params=[1, 2])
 @pytest.fixture

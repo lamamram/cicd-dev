@@ -33,4 +33,28 @@ git reset -- <fic>
 # vider l'INDEX !!!
 git reset -- .
 
+
+## 4. inverser un commit
+
+# 4.1 supprimer un commit de l'historique => git reset
+git reset HEAD~n --hard 
+# inverser le reset avec le reflog
+git reflog
+git reset --hard HEAD@{i}
+
+# reset normal => pour retravailler les commits
+git reset HEAD~m
+
+## ATTENTION ON NE FAIT PAS DE RESET SUR DES COMMITS DEJA POUSSES SUR UN DEPOT DISTANT, SUR UNE BRANCHE COMMUNE !!!!!
+
+# 4.2 inverser les modifs d'UN COMMIT:  git revert
+
+git revert HEAD~n [--no-edit]
+# ATTENTION: revert qu'un UN SEUL COMMIT donc pas (~n-1 ... n-i ... 0)
+# ATTENTION: plus vous faites un commit ancien, plus avez de probabilités de créer un conflit de version par ce que les modifs des commits en aval du revert sont assises sur celles qu'on veut dégager.
+
+ x revert 1/x revert 1/1/X == x => cycle
+
+ x --- y ---- z | revert HEAD~1 = y => x --- y --- z --- (z - y) | revert HEAD~1 => y -- z -- (z -y) -- x -y -z => ...ccumule les modifications   
+
 ```

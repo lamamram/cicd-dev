@@ -34,4 +34,30 @@
 
 [inversions](./inversions.md)
 
+### introspection
 
+* les objets git sont dans .git/objects
+* voir un commit: `git cat-file -p xxxxxx`
+* un commit contient un lien vers le commit précédent => parent xxxxxx
+
+
+### les branches
+
+1. cycle des états
+   + `git branch <name>`: créer un pointeur de branche à partir du commit courant de la branche courante
+   + `git checkout <other_branch>`: basculement de branche
+   + `git checkout -b <other_branch>`: création  + basculement
+
+2. gestion des modification WIP
+   + comment changer de branche si on a des modifications WIP dans la branche courante
+   + `git stash`
+
+3. fusion de branches
+   + cas n°1: commit de fusion "naturel": absence de relation parent-enfant entre les branches
+   + cas n°2: fast-forward : presence // => activation ou non du FF
+     `git config --global merge.ff true | false`
+
+
+### dépôts distants
+
+[remote](./remote.md)

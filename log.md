@@ -11,4 +11,9 @@ git log -p
 git log --oneline -<n> --stat
 
 ## préférer un widget graphique la plupart du temps !!!
+
+## on peut utiliser des alias avec
+git config --global alias.ll 'log --oneline'
+
+## next
 ```

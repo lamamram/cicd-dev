@@ -6,6 +6,12 @@
 #     "script": ["echo \"deps\""]
 #   }
 # }
+
+# règles globales du pipeline
+# workflow:
+#   rules:
+#     - 
+
 # image par défaut de tous le jobs
 # image docker pour python
 image: python:3.11.10-slim-bookworm
@@ -19,8 +25,8 @@ stages:
 
 generate-deps:
   # YAML compatible JSON !
-  tags: [myusine]
   stage: init
+  tags: [myusine]
   script:
     # on installe l'environnement virtuel là où on est
     - python3 -m venv ./venv
@@ -28,6 +34,9 @@ generate-deps:
     - pip3 install -r app/requirements.txt
     - pip3 install -r app/requirements-dev.txt
   # uploader le dossier ./venv dans la VM
+  # ajout de variables d'environnement injectées dans tous le jobs
+  variables:
+    TRIGGER_CACHE: "on"
   cache:
     # nom du cache (volume docker)
     key: virtual-env 
@@ -35,6 +44,18 @@ generate-deps:
     paths:
       - ./venv
     policy: push
+  # règles d'exécution
+  # 1. chaque règle écrite autorise l'exécution du job (OU)
+  # 2. TOUTES les clauses d'une règle doivent être vraie pour autoriser l'exécution du job (ET)  
+  rules:
+    # le job est exécuté si qqch change sur ces fichiers
+    - changes: 
+        - app/requirements.txt
+        - app/requirements-dev.txt
+    - if: $TRIGGER_CACHE == "on"
+      # par défaut on_success: on exécute si les jobs précédents en succes
+      # on_failure: on exécute si un job précédent et en erreur
+      when: on_success
 
 test:
   stage: testing

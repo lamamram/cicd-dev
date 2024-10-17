@@ -1,24 +1,9 @@
-# {
-#   "generate-deps": {
-#     "tags": [
-#       "myusine"
-#     ],
-#     "script": ["echo \"deps\""]
-#   }
-# }
-
-# règles globales du pipeline
 workflow:
-  # utilisation d'une variable d'environnment prédéfinies par Gitlab: 
-  # https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
   rules:
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
 
-# image par défaut de tous le jobs
-# image docker pour python
 image: python:3.11.10-slim-bookworm
 
-# étapes du pipeline dans l'ordre de la liste
 stages:
   - init
   - testing
@@ -26,37 +11,25 @@ stages:
 
 
 generate-deps:
-  # YAML compatible JSON !
   stage: init
   tags: [myusine]
   script:
-    # on installe l'environnement virtuel là où on est
     - python3 -m venv ./venv
     - source ./venv/bin/activate
     - pip3 install -r app/requirements.txt
     - pip3 install -r app/requirements-dev.txt
-  # uploader le dossier ./venv dans la VM
-  # ajout de variables d'environnement injectées dans tous le jobs
   variables:
     TRIGGER_CACHE: "on"
   cache:
-    # nom du cache (volume docker)
     key: virtual-env 
-    # localisation du dossier pour l'uploader
     paths:
       - ./venv
     policy: push
-  # règles d'exécution
-  # 1. chaque règle écrite autorise l'exécution du job (OU)
-  # 2. TOUTES les clauses d'une règle doivent être vraie pour autoriser l'exécution du job (ET)  
   rules:
-    # le job est exécuté si qqch change sur ces fichiers
     - changes: 
         - app/requirements.txt
         - app/requirements-dev.txt
     - if: $TRIGGER_CACHE == "off"
-      # par défaut on_success: on exécute si les jobs précédents en succes
-      # on_failure: on exécute si un job précédent et en erreur
       when: on_success
 
 test:
@@ -66,21 +39,26 @@ test:
   script:
     - source ./venv/bin/activate
     - cd app
-    - pytest --junit-xml=./units.xml
+    # ">" opérateur YAML qui convertie \n en " "
+    - >
+      pytest 
+      --junit-xml=./units.xml 
+      --cov=bank 
+      --cov-report=term 
+      --cov-report=xml:coverage.xml
+  # détection de la couverture globale dans la sortie du job => rerpot=term / avec une regex
+  coverage: "/^TOTAL.*?([0-9]{1,3})%/"
   cache:
     key: virtual-env
-    # gitlab-runner exécute 'git clean' APRES le cache
-    # donc on utilise la clé untracked pour obliger gitlab-runner de laisser le cache !!!
     untracked: true
     policy: pull
-  # artifacts fait remonter les éléments spécifiés dans paths: et
-  # 1. rend les éléments disponibles auto. dans les jobs suivants
-  # 2. en téléchargement
   artifacts:
-    # ATTENTION: "untracked" ici va prélever TOUS les chemins de type untracked !!!!!!
     expire_in: "1 hour"
     paths:
       - ./app/units.xml
-    # rappots spéciaux liés à des formats compatibles Gitlab => pour la data-visualisation
+      - ./app/coverage.xml
     reports:
       junit: ./app/units.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: ./app/coverage.xml

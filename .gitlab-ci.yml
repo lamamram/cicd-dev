@@ -89,7 +89,7 @@ generate-deps:
       -Dsonar.python.coverage.reportPaths=./app/coverage.xml
       -Dsonar.qualitygate.wait=true
 
-deploy:
+.deploy:
   tags:
     - myusine
   stage: deploy
@@ -115,11 +115,18 @@ e2e:
       # dns du serveur => dans la config client
       alias: selenium-server
   script:
+    - source ./venv/bin/activate
     # le client selenium a besoin du driver du moteur du navigateur ivi gecko => firefox
     - mv geckodriver /usr/bin/geckodriver
     - chmod +x /usr/bin/geckodriver
+    - cd app
     # filtrer des tests selon un marqueur
-    - pytest -k e2e
+    - pytest -m e2e
+  cache:
+    key: virtual-env
+    untracked: true
+    policy: pull
   rules:
     - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   

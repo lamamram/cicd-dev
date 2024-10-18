@@ -56,8 +56,9 @@ def show_mesgs():
 @pytest.fixture
 def selenium():
     ## pas besoin de GUI !!!
-    options = webdriver.FirefoxOptions(headless = True)
-    return webdriver.Remote(command_executor="selenium-server/wd/hub:4444", options=options)
+    options = webdriver.FirefoxOptions()
+    options.headless=True
+    return webdriver.Remote(command_executor="http://selenium-server:4444/wd/hub", options=options)
     
 
 

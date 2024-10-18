@@ -15,7 +15,4 @@ git config --global core.editor notepad.exe
 
 ## iitialisaiton du dépôt
 git init [<path>]
-
-## dépôt nu (sans copie de travail)
-git init --bare
 ```

@@ -5,3 +5,5 @@ workdir/
 venv/
 __pycache__/
 data/
+reports/
+.coverage

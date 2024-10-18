@@ -50,4 +50,15 @@ python_files = pytest_*.py
 * porter en gitlab-ci (rapport xml /  % couverture globale)
 * exécuter TDD pour faire augmenter la couverture
 
+### qualité avec sonar
+
+* `docker run --name --restart unles-stopped -d -p 9000:9000 sonarqube:lts`
+
+* admin /admin => update
+
+1. config manuelle
+   + créer projet + token + python + linux
+   + profil qualité attaché au projet
+   + gate attachée au projet => métrique "Overall Code" + "coverage + covreage condition"
+
 

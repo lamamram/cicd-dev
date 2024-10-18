@@ -6,6 +6,8 @@ import pytest
 from bank.account import Account
 from bank.client import Client
 
+from selenium import webdriver
+
 # 1. la valeur de retour d'une fonction
 # décorée par fixture est injectable 
 # dans toute fonction de test
@@ -50,6 +52,13 @@ def show_mesgs():
     print("\nbefore")
     yield
     print("\nafter")
+
+@pytest.fixture
+def selenium():
+    ## pas besoin de GUI !!!
+    options = webdriver.FirefoxOptions(headless = True)
+    return webdriver.Remote(command_executor="selenium-server/wd/hub:4444", options=options)
+    
 
 
 # paramétrisation de tous les tests depuis conftest

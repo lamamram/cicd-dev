@@ -32,5 +32,23 @@ def test_overdraft():
     # monkeypatch.setattr(account_1, "_Account__client", MockClient())
     # assert account_1.get_client_name() == "Michel LEFEBVRE"
 
+def test_deposit():
+    # Arrange
+    account = Account(1, Client(1))
+    init_balance = account.getBalance()
+    # Act
+    amount = 100.
+    account.deposit(amount)
+    # Assert
+    assert init_balance < account.getBalance()
 
+def test_negative_deposit():
+    # Arrange
+    account = Account(1, Client(1))
+    init_balance = account.getBalance()
+    # Act
+    amount = -100.
+    account.deposit(amount)
+    # Assert
+    assert init_balance == account.getBalance()
 

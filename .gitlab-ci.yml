@@ -7,9 +7,12 @@ image: python:3.11.10-slim-bookworm
 stages:
   - init
   - testing
-#   - quality
+  - quality
+  - deploy
+  - e2e
 
 
+# "." => désactive le job
 generate-deps:
   stage: init
   tags: [myusine]
@@ -32,7 +35,7 @@ generate-deps:
     - if: $TRIGGER_CACHE == "off"
       when: on_success
 
-test:
+.test:
   stage: testing
   tags:
     - myusine
@@ -62,3 +65,61 @@ test:
       coverage_report:
         coverage_format: cobertura
         path: ./app/coverage.xml
+
+.sonar:
+  # désactivation de la commande de base (entrypoint) de l'image, au profit de notre "script:" 
+  image:
+    name: sonarsource/sonar-scanner-cli:11
+    entrypoint: [""]
+  tags:
+    - myusine
+  stage: quality
+  # utiliser des variables cachées dans Gitlab CI
+  # 1. projet -> settings -> CICD -> Variables
+  # créer une variable: cachée + masquée et non protégée (pour toutes les branches)
+  # donner le nom et la valeur
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.projectKey=myusine
+      -Dsonar.sources=./app
+      -Dsonar.exclusions=./app/venv
+      -Dsonar.host.url=http://$SONAR_HOST:9000
+      -Dsonar.login=$SONAR_TOKEN
+      -Dsonar.python.coverage.reportPaths=./app/coverage.xml
+      -Dsonar.qualitygate.wait=true
+
+deploy:
+  tags:
+    - myusine
+  stage: deploy
+  script:
+    - echo "DEPLOY !!"
+  ## ajoute un lien vers l'application déployée !!!
+  ## possibilité d'environnement Dynamiques
+  environment:
+    name: staging
+    url: http://192.168.44.180:8080
+  # le job n'est exécutable qu'avec un tag
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: manual
+    # - if: $CI_COMMIT_TAG ~= /^v\.\d+/
+
+e2e:
+  tags:
+    - myusine
+  stage: e2e
+  services:
+    - name: selenium/standalone-firefox:latest
+      # dns du serveur => dans la config client
+      alias: selenium-server
+  script:
+    # le client selenium a besoin du driver du moteur du navigateur ivi gecko => firefox
+    - mv geckodriver /usr/bin/geckodriver
+    - chmod +x /usr/bin/geckodriver
+    # filtrer des tests selon un marqueur
+    - pytest -k e2e
+  rules:
+    - if: $CI_COMMIT_TAG
+  

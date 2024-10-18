@@ -61,3 +61,9 @@
 ### dépôts distants
 
 [remote](./remote.md)
+
+## JOUR 4
+
+### intégration continue
+
+[CICD](./cicd.md)

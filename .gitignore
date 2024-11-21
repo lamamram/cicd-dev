@@ -1,0 +1,9 @@
+.vagrant/
+notes/
+old/
+workdir/
+venv/
+__pycache__/
+data/
+reports/
+.coverage

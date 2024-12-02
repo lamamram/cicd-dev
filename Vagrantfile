@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
   # cidr = "24 (si masque réseau en 255.255.255.0)"
 
   [
-    ["gitlab.myusine.fr", "6144", "2", "mlamamra/myusine"],
+    ["gitlab.myusine.fr", "8192", "4", "mlamamra/myusine"],
   ].each do |vmname,mem,cpu,os|
     config.vm.define "#{vmname}" do |machine|
 
@@ -22,10 +22,14 @@ Vagrant.configure(2) do |config|
         v.name = "#{vmname}"
         v.customize ["modifyvm", :id, "--ioapic", "on"]
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--natpf1", "https,tcp,127.0.0.1,8443,,443"]
+        v.customize ["modifyvm", :id, "--natpf1", "http,tcp,127.0.0.1,8000,,80"]
       end
       machine.vm.box = "#{os}"
       machine.vm.hostname = "#{vmname}"
-      machine.vm.network "public_network"
+      # machine.vm.network "public_network"
+      # machine.vm.network "private_network", ip: "192.168.50.4",
+      #     virtualbox__intnet: true
       # machine.vm.network "public_network",bridge: "#{int}",
       #   ip: "#{ip}",
       #   netmask: "#{cidr}"

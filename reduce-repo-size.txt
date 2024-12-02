@@ -1,0 +1,15 @@
+## créer la branche sans historique depuis le commit de la branche à alléger
+git checkout  --orphan latest_branch # (ou depuis un commit pls ancien)
+## recréer le "root-commit" de la nouvelle branche
+git add . && git commit -m "Initial commit message"
+
+## supprimer de force l'ancienne branche   
+git branch -D main # Deleting main branch
+
+# renommer et repousser de force la nouvelle branche sur le dépôt central
+git branch -m main # renaming branch as main
+git push -f origin main # pushes to master branch
+
+## supprimer physiquement les commit désaffiliés ( non liés par une branche )
+## ATENTION: perte de données !!!!
+git gc — aggressive — prune=all # remove the old files

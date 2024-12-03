@@ -6,4 +6,14 @@ venv/
 __pycache__/
 data/
 reports/
+# .vscode/
+# ".coverage" sera ignoré dans la racine du projet uniquement
+# /.coverage
+# ".coverage" sera ignoré uniquement dans le sous dossier /dir
+# /dir/**/.coverage
+# ".coverage" sera ignoré quelque soit son emplacement
 .coverage
+# settings.json
+## exception à une règle précedente
+# !/settings.json
+.pytest_cache/

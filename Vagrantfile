@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         v.customize ["modifyvm", :id, "--natpf1", "https,tcp,127.0.0.1,8443,,443"]
         v.customize ["modifyvm", :id, "--natpf1", "http,tcp,127.0.0.1,8025,,8025"]
-        v.customize ["modifyvm", :id, "--natpf1", "http,tcp,127.0.0.1,9000,,9000"]
+        v.customize ["modifyvm", :id, "--natpf1", "sonar,tcp,127.0.0.1,9000,,9000"]
       end
       machine.vm.box = "#{os}"
       machine.vm.hostname = "#{vmname}"

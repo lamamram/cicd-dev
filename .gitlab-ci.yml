@@ -1,17 +1,19 @@
 image: python:3.13-slim-bookworm
 
-#### ORDRE d'éxécution du pipeline
-# 1. par défaut, les jobs sont multithreadés
-# 2. pour rajouter un ordre d'exécution
-
-# étapes du pipelines
-# quand on ajoute plusieurs jobs dans un stage => exécution parallèle
-# le runner attend la fin de tous les jobs d'un stage pour initier le stage prochain
 stages:
   - dependencies
   - tests
 
+### créer des environnements custom pour le pipelines ou dans le jobs
+# uniquement string
+variables:
+  TRIGGER_CACHE: "off"
+
 generate_deps:
+  # variables locales
+  # variables: ...
+  # si des jobs parallèles utilisent le cache: copies du cache
+  # parallel: 2
   stage: dependencies
   tags:
     - myusine
@@ -26,18 +28,28 @@ generate_deps:
       - venv
     untracked: true
     policy: push
+  # règles d'exécution du job
+  # si une règle est vraie => le job est exécuté (OR)
+  # une règles est vraue => si toutes ses clauses sont vraies (AND)
+  rules:
+    # 1ère règle: 2 clauses
+    #  1/ si les dépendances changent
+    #  2/ (pour l'exemple) si les jobs précédents sont en succès (comportement naturel du pipeline)
+    - changes:
+        - app/requirements*.txt
+      when: on_success
+    # 2ème règle : utilisant une variable d'environnement custom
+    - if: $TRIGGER_CACHE == "on"
 
 test:
   stage: tests
   tags:
     - myusine
   script:
-    # activation du venv qui a été installé par le cache
     - source ./venv/bin/activate
     - cd app
     - pytest -v
   cache:
     key: pip_deps
     untracked: true
-    # ici, on veut utiliser le cache
     policy: pull

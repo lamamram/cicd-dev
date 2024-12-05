@@ -4,6 +4,15 @@ stages:
   - dependencies
   - tests
 
+### utilisation des variables d'environnement prédéfinies: https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+## utilisation des règles de pipelines
+workflow:
+  # règles d'exécution du pipeline
+  rules:
+   # CI_PIPELINE_SOURCE: type de déclenchements ici (push git ou bouton GUI)
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
 variables:
   TRIGGER_CACHE: "off"
 
@@ -35,7 +44,6 @@ test:
   script:
     - source ./venv/bin/activate
     - cd app
-    # ">" opérateur YAML; convertit les sauts de lignes en espaces 
     - >
       pytest 
       -v
@@ -44,11 +52,8 @@ test:
     key: pip_deps
     untracked: true
     policy: pull
-  # faire remonter un produit du job (rapports, ...)
   artifacts:
-    # qui peut accéder au rapport
     access: all
-    # DLC de l'artefact
     expire_in: "1 hour"
     paths:
       - app/units.xml

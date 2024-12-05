@@ -1,13 +1,29 @@
-# { "test": { "tags": [], "script": [] } }
-# test: valeur arbitraire
+# image par défaut du pipeline: utilisée par défaut pour les jobs
+image: python:3.13-slim-bookworm
+
+generate_deps:  
+  tags:
+    - myusine
+  script:
+    # création du dossier venv
+    - python3 -m venv venv
+    # activate
+    - source ./venv/bin/activate
+    # ajout des dépendances dans le dossier venv
+    - pip3 install -r app/requirements.txt
+    - pip3 install -r app/requirements-dev.txt
+  cache:
+    key: pip_deps
+    paths:
+      - venv
+    # venv est à l'état "untracked" du point de vue git
+    untracked: true
+    # on utilise le cache ici pour uploader le dossier venv => push 
+    policy: push
+
 test:
-  # image du job, qui écrase l'image par défaut du runner
-  image: python:3.13-slim-bookworm
-  # tags correspondant à un/plusieurs runner(s) donné(s)
   tags:
     - myusine
   script:
     - cd app
-    - pip3 install -r requirements.txt
-    - pip3 install -r requirements-dev.txt
     - pytest -v

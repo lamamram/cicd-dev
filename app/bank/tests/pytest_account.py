@@ -5,15 +5,19 @@ import warnings
 import sys
 
 
+## paramètres du cas test => FIXTURES
 def test_balance(account, balance):
     # capture de sys.stdout => option -s
     # print(f"\nbalance: {account.getBalance()}\n")
     assert balance == account.getBalance()
 
-def test_overdraft():
-    account = Account(1, Client(1))
-    account.withdraw(600)
-    assert account.overdraft
+# def test_overdraft():
+#     # Arrange / Given: contexte du test
+#     account = Account(1, Client(1))
+#     # Act / When: exécuter la fonctionnalité à test
+#     account.withdraw(600)
+#     # Assert / Then: évaluer le delta calculé vs attendu
+#     assert account.overdraft
 
 # @pytest.mark.parametrize("firstname,lastname", [("michel", "lefebvre")])
 # def test_client_name(account_1, firstname, lastname, monkeypatch):

@@ -4,16 +4,10 @@ stages:
   - dependencies
   - tests
 
-### créer des environnements custom pour le pipelines ou dans le jobs
-# uniquement string
 variables:
   TRIGGER_CACHE: "off"
 
 generate_deps:
-  # variables locales
-  # variables: ...
-  # si des jobs parallèles utilisent le cache: copies du cache
-  # parallel: 2
   stage: dependencies
   tags:
     - myusine
@@ -28,17 +22,10 @@ generate_deps:
       - venv
     untracked: true
     policy: push
-  # règles d'exécution du job
-  # si une règle est vraie => le job est exécuté (OR)
-  # une règles est vraue => si toutes ses clauses sont vraies (AND)
   rules:
-    # 1ère règle: 2 clauses
-    #  1/ si les dépendances changent
-    #  2/ (pour l'exemple) si les jobs précédents sont en succès (comportement naturel du pipeline)
     - changes:
         - app/requirements*.txt
       when: on_success
-    # 2ème règle : utilisant une variable d'environnement custom
     - if: $TRIGGER_CACHE == "on"
 
 test:
@@ -48,8 +35,21 @@ test:
   script:
     - source ./venv/bin/activate
     - cd app
-    - pytest -v
+    # ">" opérateur YAML; convertit les sauts de lignes en espaces 
+    - >
+      pytest 
+      -v
+      --junit-xml=./units.xml
   cache:
     key: pip_deps
     untracked: true
     policy: pull
+  # faire remonter un produit du job (rapports, ...)
+  artifacts:
+    # qui peut accéder au rapport
+    access: all
+    # DLC de l'artefact
+    expire_in: "1 hour"
+    paths:
+      - app/units.xml
+

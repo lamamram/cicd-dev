@@ -31,9 +31,9 @@ class Account:
         if isinstance(value, (int, float)) and value > 0:
             self.__update_balance(value) 
 
-    # def withdraw(self, value: float):
-    #     if isinstance(value, (int, float)) and value > 0:
-    #         self.__update_balance(-value)
+    def withdraw(self, value: float):
+        if isinstance(value, (int, float)) and value > 0:
+            self.__update_balance(-value)
 
     def get_client_name(self):
         return self.__client.get_full_name()
@@ -44,5 +44,6 @@ class Account:
 
     def __updateOverdraft(self):
         self.overdraft = bool(self.__balance < 0)
+        
 
 

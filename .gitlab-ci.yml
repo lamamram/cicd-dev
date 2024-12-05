@@ -44,6 +44,11 @@ test:
       pytest 
       -v
       --junit-xml=./units.xml
+      --cov=bank
+      --cov-report=term
+      --cov-report=xml:./coverage.xml
+  # détection de la couverture totale dans la sortie du job
+  coverage: "/^TOTAL.*?([0-9]{1,3})%/"
   cache:
     key: pip_deps
     untracked: true
@@ -53,9 +58,15 @@ test:
     expire_in: "1 hour"
     paths:
       - app/units.xml
+      - app/coverage.xml
     # clés spéciales liées à des rapports spéciaux aux formats attendus de GITLAB
     reports:
       # remonter le rapports dans l'interface graphique
       junit: app/units.xml
+      # remonter le rapport de couverture de code 
+      coverage_report:
+        # format pour pytest-cov
+        coverage_format: cobertura
+        path: app/coverage.xml
       
 

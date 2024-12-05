@@ -1,29 +1,43 @@
-# image par défaut du pipeline: utilisée par défaut pour les jobs
 image: python:3.13-slim-bookworm
 
-generate_deps:  
+#### ORDRE d'éxécution du pipeline
+# 1. par défaut, les jobs sont multithreadés
+# 2. pour rajouter un ordre d'exécution
+
+# étapes du pipelines
+# quand on ajoute plusieurs jobs dans un stage => exécution parallèle
+# le runner attend la fin de tous les jobs d'un stage pour initier le stage prochain
+stages:
+  - dependencies
+  - tests
+
+generate_deps:
+  stage: dependencies
   tags:
     - myusine
   script:
-    # création du dossier venv
     - python3 -m venv venv
-    # activate
     - source ./venv/bin/activate
-    # ajout des dépendances dans le dossier venv
     - pip3 install -r app/requirements.txt
     - pip3 install -r app/requirements-dev.txt
   cache:
     key: pip_deps
     paths:
       - venv
-    # venv est à l'état "untracked" du point de vue git
     untracked: true
-    # on utilise le cache ici pour uploader le dossier venv => push 
     policy: push
 
 test:
+  stage: tests
   tags:
     - myusine
   script:
+    # activation du venv qui a été installé par le cache
+    - source ./venv/bin/activate
     - cd app
     - pytest -v
+  cache:
+    key: pip_deps
+    untracked: true
+    # ici, on veut utiliser le cache
+    policy: pull

@@ -4,12 +4,8 @@ stages:
   - dependencies
   - tests
 
-### utilisation des variables d'environnement prédéfinies: https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-## utilisation des règles de pipelines
 workflow:
-  # règles d'exécution du pipeline
   rules:
-   # CI_PIPELINE_SOURCE: type de déclenchements ici (push git ou bouton GUI)
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "web"
 
@@ -57,4 +53,9 @@ test:
     expire_in: "1 hour"
     paths:
       - app/units.xml
+    # clés spéciales liées à des rapports spéciaux aux formats attendus de GITLAB
+    reports:
+      # remonter le rapports dans l'interface graphique
+      junit: app/units.xml
+      
 

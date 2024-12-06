@@ -4,6 +4,9 @@ stages:
   - dependencies
   - tests
   - quality
+  # environnement de démonstration auprès du client
+  - staging
+  - interface-tests
 
 workflow:
   rules:
@@ -35,7 +38,7 @@ generate_deps:
     - if: $TRIGGER_CACHE == "on"
 
 ## ".": désactivation d'un job
-test:
+.test:
   stage: tests
   tags:
     - myusine
@@ -45,6 +48,7 @@ test:
     - >
       pytest 
       -v
+      -m "not e2e"
       --junit-xml=./units.xml
       --cov=bank
       --cov-report=term
@@ -66,7 +70,7 @@ test:
         coverage_format: cobertura
         path: app/coverage.xml
 
-sonar:
+.sonar:
   ## 1. se donner une image qui contient le binaire sonar-scanner
   image:
     name: sonarsource/sonar-scanner-cli:11
@@ -93,4 +97,61 @@ sonar:
       -Dsonar.login=$SONAR_TOKEN
       -Dsonar.python.coverage.reportPaths=./app/coverage.xml
       -Dsonar.qualitygate.wait=true
+
+#### premier déploiement
+
+.deploy:
+  tags:
+    - myusine
+  stage: staging
+  script:
+    - echo "DEPLOY !!"
+  ## ajoute un lien vers l'application déployée !!!
+  ## possibilité d'environnement Dynamiques
+  environment:
+    name: staging
+    url: http://dawan.fr
+  # le job n'est exécutable qu'avec un tag
+  rules: &staging
+    # $CI_COMMIT_BRANCH: branche sur laquelle on est
+    - if: $CI_COMMIT_BRANCH == "main"
+      # demande une action humaine (bouton dans la gui)
+      when: manual
+    # $CI_COMMIT_TAG: tag poussé
+    - if: $CI_COMMIT_TAG
+      when: manual
+
+e2e:
+  stage: interface-tests
+  tags:
+    - myusine
+  # 3. on va se donner un conteneur "sidecar" / service : selenium/firefox
+  services:
+    - name: selenium/standalone-firefox:latest
+      # nom du domaine du serveur !!!
+      alias: selenium-server
+  before_script:
+    # 2. le script client (test ) doit avoir accès au driver (geckodriver)
+    # on exécute le conteneur en tant que root
+    # on met le driver dans le PATH 
+    - mv geckodriver /usr/bin/
+    - chmod +x /usr/bin/geckodriver
+  script:
+    - source ./venv/bin/activate
+    - cd app
+    # 1. il va falloir distinguer les tests unitaires des tests e2e:
+    # => avec le marqueur activé dans le pytest.ini
+    - pytest -m e2e
+  cache:
+    key: pip_deps
+    untracked: true
+    policy: pull
+  # alias YAML
+  # rules: *staging
+  rules: &staging
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_TAG
+
+
+
 

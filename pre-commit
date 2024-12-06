@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# hook plus intelligent
+# git status | grep => trouver les fichiers (untracked && modified), 
+# + unstaged (pas dans l'index), 
+# avant formatage
+python -m black --config ./app/pyproject.py.toml -q ./app
+# rajouter les modifications issues du formatage
+git add .
+# plus intelligent
+# calculer le distingo entre les modifications liées au formatage et celles
+# calculées précédemment
+
+### ATTENTION: le `git commit` doit être exécuté dans le venv  !!!! sinon black n'existe pas !!!!!

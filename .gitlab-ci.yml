@@ -3,6 +3,7 @@ image: python:3.13-slim-bookworm
 stages:
   - dependencies
   - tests
+  - quality
 
 workflow:
   rules:
@@ -12,7 +13,7 @@ workflow:
 variables:
   TRIGGER_CACHE: "off"
 
-generate_deps:
+.generate_deps:
   stage: dependencies
   tags:
     - myusine
@@ -33,7 +34,8 @@ generate_deps:
       when: on_success
     - if: $TRIGGER_CACHE == "on"
 
-test:
+## ".": désactivation d'un job
+.test:
   stage: tests
   tags:
     - myusine
@@ -47,7 +49,6 @@ test:
       --cov=bank
       --cov-report=term
       --cov-report=xml:./coverage.xml
-  # détection de la couverture totale dans la sortie du job
   coverage: "/^TOTAL.*?([0-9]{1,3})%/"
   cache:
     key: pip_deps
@@ -59,14 +60,32 @@ test:
     paths:
       - app/units.xml
       - app/coverage.xml
-    # clés spéciales liées à des rapports spéciaux aux formats attendus de GITLAB
     reports:
-      # remonter le rapports dans l'interface graphique
       junit: app/units.xml
-      # remonter le rapport de couverture de code 
       coverage_report:
-        # format pour pytest-cov
         coverage_format: cobertura
         path: app/coverage.xml
-      
+
+sonar:
+  ## 1. se donner une image qui contient le binaire sonar-scanner
+  image:
+    name: sonarsource/sonar-scanner-cli:11
+    # YAML est compatible avec JSON [""]
+    # ICI, l'instruction ENTRYPOINT de l'image créé une collision 
+    # avec la commande du script du job => donc on la neutralise
+    entrypoint: [""]
+  stage: quality
+  tags:
+    - myusine
+  script:
+    ## 2. masquer les secrets
+    # dans le projet dev > Settings > CI/CD > Variables
+    # add variable > masked & hidden + décocher "protected" + key / value
+    ## 3. périmètre de l'analyse : sonar.sources && sonar.exclusions
+    - >
+      sonar-scanner
+      -Dsonar.projectKey=myusine
+      -Dsonar.sources=./app
+      -Dsonar.host.url=http://gitlab.myusine.fr:9000
+      -Dsonar.login=$SONAR_TOKEN
 

@@ -4,10 +4,12 @@ from base import base_path
 from time import sleep
 from random import randint
 
+
 class AbsFactory(ABC):
     @abstractmethod
     def get_model(self, _id):
         pass
+
 
 class JsonFactory(AbsFactory):
 
@@ -20,11 +22,11 @@ class JsonFactory(AbsFactory):
         #     raise FileNotFoundError(f"{models_path}: wrong path !")
         # if not os.path.exists(self._file):
         #     raise FileNotFoundError(f"{model + self.__EXT}: wrong name !")
-    
+
     def get_model(self, _id):
         with open(self._file) as f:
             return json.loads(f.read())[str(_id)]
-    
+
     def get(self, **fields):
         with open(self._file, "r") as f:
             json_data = json.loads(f.read())
@@ -32,11 +34,12 @@ class JsonFactory(AbsFactory):
                 matches = 0
                 for label, value in fields.items():
                     if label in obj and obj[label] == value:
-                        matches +=1
+                        matches += 1
                 if matches == len(list(fields)):
                     obj["id"] = _id
                     return obj
         return {}
+
 
 class FactoryStore:
 
@@ -52,11 +55,10 @@ class FactoryStore:
             raise ValueError("{source} not implemented !")
         return factory(model)
 
+
 store = FactoryStore()
-store.register_source('json', JsonFactory)
+store.register_source("json", JsonFactory)
 
 
 if __name__ == "__main__":
     pass
-
-

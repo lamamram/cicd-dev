@@ -4,6 +4,12 @@ module hosting class Account
 
 from bank.factories import store
 
+TEST = (
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    and "zzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+)
+
+
 class Account:
     """
     class handling a bank account
@@ -29,7 +35,7 @@ class Account:
 
     def deposit(self, value: float):
         if isinstance(value, (int, float)) and value > 0:
-            self.__update_balance(value) 
+            self.__update_balance(value)
 
     def withdraw(self, value: float):
         if isinstance(value, (int, float)) and value > 0:
@@ -44,6 +50,3 @@ class Account:
 
     def __updateOverdraft(self):
         self.overdraft = bool(self.__balance < 0)
-        
-
-

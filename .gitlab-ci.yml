@@ -13,7 +13,7 @@ workflow:
 variables:
   TRIGGER_CACHE: "off"
 
-.generate_deps:
+generate_deps:
   stage: dependencies
   tags:
     - myusine
@@ -35,7 +35,7 @@ variables:
     - if: $TRIGGER_CACHE == "on"
 
 ## ".": désactivation d'un job
-.test:
+test:
   stage: tests
   tags:
     - myusine
@@ -82,10 +82,15 @@ sonar:
     # dans le projet dev > Settings > CI/CD > Variables
     # add variable > masked & hidden + décocher "protected" + key / value
     ## 3. périmètre de l'analyse : sonar.sources && sonar.exclusions
+    ## réutilisation du rapport de couverture de code grâce à la clé "artifacts" du job précédent
+    ## 5. -Dsonar.qualitygate.wait=true
     - >
       sonar-scanner
       -Dsonar.projectKey=myusine
-      -Dsonar.sources=./app
+      -Dsonar.sources=./app/bank
+      -Dsonar.exclusions=app/bank/tests/**/*.py
       -Dsonar.host.url=http://gitlab.myusine.fr:9000
       -Dsonar.login=$SONAR_TOKEN
+      -Dsonar.python.coverage.reportPaths=./app/coverage.xml
+      -Dsonar.qualitygate.wait=true
 

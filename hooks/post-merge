@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ -d "../workdir" ]]; then
+  if [[ ! -d "../workdir/samples" ]]; then
+    mkdir ../workdir/samples
+  fi
+  git log -1 --stat | grep -Po "^ \K[a-zA-Z0-9\._-]+(?= +\|)" | xargs -i cp {} ../workdir/samples
+fi

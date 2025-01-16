@@ -3,5 +3,13 @@ if [[ -d "../workdir" ]]; then
   if [[ ! -d "../workdir/samples" ]]; then
     mkdir ../workdir/samples
   fi
-  git log -1 --stat | grep -Po "^ \K[a-zA-Z0-9\._-]+(?= +\|)" | xargs -i cp {} ../workdir/samples
+  last_commit=$(git rev-list --all -1)
+  last_commit=${last_commit:0:7}
+  last_commit_main=$(git log -1 --oneline main | awk '{print $1}')
+  if [[ "$last_commit" -eq "$last_commit_main" ]]; then
+    last_commit_origin_main=$(git log -1 --oneline origin/main | awk '{print $1}')
+    if [[ "$last_commit_main" -eq "$last_commit_origin_main" ]]; then
+      git log -1 --stat main | grep -Po "^ \K[a-zA-Z0-9\._-]+(?= +\|)" | xargs -i cp {} ../workdir/samples
+    fi
+  fi
 fi

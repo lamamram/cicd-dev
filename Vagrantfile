@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
   image = "ml-registry/gitlab"
 
   [
-    ["gitlab.myusine.fr", "8192", "4"],
+    ["gitlab.lan.fr", "8192", "4"],
   ].each do |hostname,mem,cpus|
     config.vm.define "#{hostname}" do |machine|
 

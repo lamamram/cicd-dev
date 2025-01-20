@@ -18,15 +18,17 @@ Vagrant.configure(2) do |config|
   # ip = "adresse ip disponible sur le sous réseau local pour la vm (ping | nslookup pour tester)"
   # cidr = "24 (si masque réseau en 255.255.255.0)"
 
+  image = "ml-registry/gitlab"
+
   [
-    ["gitlab.myusine.fr", "8192", "4", "mlamamra/myusine"],
-  ].each do |vmname,mem,cpu,os|
-    config.vm.define "#{vmname}" do |machine|
+    ["gitlab.myusine.fr", "8192", "4"],
+  ].each do |hostname,mem,cpus|
+    config.vm.define "#{hostname}" do |machine|
 
       machine.vm.provider "virtualbox" do |v|
         v.memory = "#{mem}"
-        v.cpus = "#{cpu}"
-        v.name = "#{vmname}"
+        v.cpus = "#{cpus}"
+        v.name = "#{hostname}"
         v.customize ["modifyvm", :id, "--ioapic", "on"]
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         ## pour travailler en NAT
@@ -34,8 +36,8 @@ Vagrant.configure(2) do |config|
         # v.customize ["modifyvm", :id, "--natpf1", "http,tcp,127.0.0.1,8025,,8025"]
         # v.customize ["modifyvm", :id, "--natpf1", "sonar,tcp,127.0.0.1,9000,,9000"]
       end
-      machine.vm.box = "#{os}"
-      machine.vm.hostname = "#{vmname}"
+      machine.vm.box = "#{image}"
+      machine.vm.hostname = "#{hostname}"
       ## pour travailler en bridge public et DHCP
       machine.vm.network "public_network", bridge: "#{int}"
       ## pour travailler en bridge public + IP fixe

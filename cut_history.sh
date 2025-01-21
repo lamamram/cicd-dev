@@ -18,3 +18,4 @@ git push -f origin $2
 git gc --aggressive --prune=all
 ## even for the reflog
 git reflog expire --all --expire=now
+## THAT'S FOLKS !!!

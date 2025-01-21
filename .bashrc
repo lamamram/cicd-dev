@@ -13,6 +13,8 @@ alias fetch='git fetch'
 __git_complete fetch _git_fetch
 alias gbr='git branch'
 __git_complete gbr _git_branch
+alias gsw='auto-stash.sh'
+__git_complete gsw _git_switch
 
 
 function ac {

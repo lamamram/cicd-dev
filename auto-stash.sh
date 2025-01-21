@@ -1,4 +1,5 @@
 #!/bin/bash
+## place in the PATH !!!
 
 if [[ "$1" == "-" ]];then
   git switch -

@@ -157,7 +157,7 @@ jenkins/ssh-agent:alpine-jdk17
 
 ## SCHEMA COMPLET
 
-![](./schemas/schema-jenkins-docker.png)
+![](./schemas/jenkins-structure.png)
 
 
 ## automatisations

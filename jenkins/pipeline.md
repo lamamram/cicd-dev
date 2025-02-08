@@ -1,41 +1,46 @@
 # build du pipeline maven
 
-## version agent "any" => exécution sur jenkins en local
+## version agent "any"
 
+* Jenkinsfile de base
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+    }
+}
+```
 * guide : [doc](https://www.jenkins.io/blog/2017/02/07/declarative-maven-project/)
 
-1. préparer les outils prérequis
-  - maven
-  - un jdk 17
+> &#171; any &#187; => exécution sur le controleur ou l'agent SSH
 
-2. ajouter maven et le jdk dans 
-  - Administrer Jenkins
-  - tools
+### utiliser maven
+
+1. prérequis: ajouter maven et le jdk dans 
+  - *Dashboard > Administrer Jenkins > tools*
   - maven > nom  + version
   - jdk > nom
 
-3. le plugin maven + pipeline
+2. le **plugin maven** + pipeline (déjà là)
 
-4. ajouter la section tools dans le Jenkinsfile pour selectionner les éléments prréexistant
-
-5. scrutation du dépôt git
-  - version naïve: 
-     + projet dev 
-     + configurer 
-     + section Triggers
-     + scrutation SCM > planning H/4 * * * *
-  - version performante
-     + hook post-receive 
-     + enlever le planning
+3. ajouter la section `tools { ... }` dans le Jenkinsfile pour selectionner les éléments précités
 
 ### job units
 
-* stage TEST
-  - steps: sh 'mvn test' > puisque les plugins de rapports test / couverture dans le pom.xml
-  - post: remontée des rapports
-    + junit pour surefire
-    + recordCoverage pour jacoco
-  - amélioration avec le plugin failsafe + sub-goal maven "maven" dans le pom
+* stage: TEST
+* steps: sh 'mvn test'
+* post: remontée des rapports
+  - rapports test / couverture configurés dans le pom.xml
+  - junit pour le **plugin maven surefire**
+  - recordCoverage pour **plugin maven jacoco**
+* amélioration avec le **plugin maven failsafe** + *sub-goals* &#171; jacoco &#187; dans le pom
   - permet d'utiliser le goal `mvn verify` avec units et integration comptabilisés ensemble dans les rapports
 
 ### job qualité
@@ -66,7 +71,7 @@ docker run \
     -d --restart unless-stopped \
     -p 9000:9000 \
     --net jenkins-net \
-    --memory 2g \
+    --memory 6g \
     sonarqube:lts
 ```
 

@@ -53,3 +53,4 @@
    + avantage: historique simple et linéarisé
    + inconvénient: perd la trace de la cohérence des commits des branches de foncitonnalités
    + forcer les commit de fusion: soit `merge --no-ff` ou `git config --global merge.ff false`
+

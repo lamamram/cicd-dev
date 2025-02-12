@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example.helloworld</groupId>
+    <artifactId>formation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <junit-platform-suite.version>1.9.2</junit-platform-suite.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <junit-surefire.version>3.2.5</junit-surefire.version>
+        <jacoco.version>0.8.7</jacoco.version>
+        <assertj.version>3.15.0</assertj.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <mockito.version>2.21.0</mockito.version>
+        <slf4j.version>2.0.6</slf4j.version>
+		<logback.version>1.4.5</logback.version>
+        <!-- sonar.host.url>http://gitlab.myusine.fr:9000</sonar.host.url>
+        <sonar.projectKey>myproject</sonar.projectKey>
+        <sonar.login>sqp_ee7f18071a401ac2817b1fede39cbccaaa07c561</sonar.login -->
+        <cucumber.version>7.11.0</cucumber.version>
+		<selenium-java.version>3.141.0</selenium-java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit-platform-suite.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- assertions avancées -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>${hamcrest.version}</version>
+        </dependency>
+        <dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <!-- mocking -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+        </dependency>
+        <!-- logging libs -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+        <!-- client sonarqube -->
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.7.0.1746</version>
+        </dependency>
+        <!-- cucumber -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit-platform-engine</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- selenium -->
+		<dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium-java.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.example.helloworld.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${junit-surefire.version}</version>
+                <configuration>
+                    <enableAssertions>true</enableAssertions>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <!-- tags -->
+                    <!-- <groups>A</groups -->
+                    <!-- <excludedGroups>B</excludedGroups> -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Integration tests are run by failsafe. -->
+                <!-- Classes under src/test/java called *IT are included automatically. -->
+                <!-- Integration tests are run during the verify phase. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.0</version>
+                <executions>
+                <execution>
+                    <goals>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
+                    </goals>
+                </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <!-- intégration des tests d'intégration avec ls tests unitaires -->
+                    <execution>
+                        <id>jacoco-prepare-agent-integration</id>
+                        <goals>
+                        <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules />
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Combine the code coverage statistics generated for the unit and the integration tests. -->
+                        <id>jacoco-merge</id>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/jacoco-both.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jacoco-integration</id>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-reportboth</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-both.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-both</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <!-- config; pour cadrer, si nécéssaire, le scope à tester -->
+                <configuration>
+                    <excludes>
+                        <exclude>**/todo/*</exclude>
+                        <exclude>**/smells/*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configFile>src/main/resources/formatter/formatter.xml</configFile>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <version>2.23.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

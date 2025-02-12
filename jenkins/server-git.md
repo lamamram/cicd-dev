@@ -2,12 +2,13 @@
 
 ## créer un utilisateur git
 
-1. `sudo useradd -m -U git`
-2. changer d'utilisateur: `sudo su -s /bin/bash - git`
+1. `sudo useradd -m -U -s /bin/bash git`
+2. changer d'utilisateur: `sudo su - git`
 
 ## créer le dépôt NU
 
 ```bash
+git config --global init.defaultBranch main
 mkdir ~/dev.git
 cd ~/dev.git
 git init --bare
@@ -38,7 +39,7 @@ chmod 700 ~/.ssh
 2. ajouter
 
 ```text
-Host jenkins.myusine.fr
+Host jenkins.lan
  IdentityFile "/c/Users/<user>/.ssh/jenkins"
  UserKnownHostsFile /dev/null
  StrictHostKeyChecking no

@@ -1,0 +1,1 @@
+curl -u admin:R00tt00R -s -k -X POST https://jenkins.lan:8443/git/notifyCommit?url=git@jenkins.lan:dev.git&token=?????

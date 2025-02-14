@@ -20,9 +20,9 @@
         <mockito.version>2.21.0</mockito.version>
         <slf4j.version>2.0.6</slf4j.version>
 		<logback.version>1.4.5</logback.version>
-        <!-- sonar.host.url>http://gitlab.myusine.fr:9000</sonar.host.url>
-        <sonar.projectKey>myproject</sonar.projectKey>
-        <sonar.login>sqp_ee7f18071a401ac2817b1fede39cbccaaa07c561</sonar.login -->
+        <!-- sonar.host.url>http://jenkins.lan:9000</sonar.host.url>
+        <sonar.projectKey>java-app</sonar.projectKey>
+        <sonar.login>sqp_32de7c954016c10aace196eb22f1b16ca1780b3e</sonar.login -->
         <cucumber.version>7.11.0</cucumber.version>
 		<selenium-java.version>3.141.0</selenium-java.version>
     </properties>
@@ -242,6 +242,7 @@
                 </executions>
                 <configuration>
                     <configFile>src/main/resources/formatter/formatter.xml</configFile>
+                    <lineEnding>LF</lineEnding>
                     <encoding>UTF-8</encoding>
                 </configuration>
                 <version>2.23.0</version>

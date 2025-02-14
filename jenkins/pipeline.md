@@ -37,6 +37,7 @@ pipeline {
 * stage: TEST
 * steps: sh 'mvn test'
 * post: remontée des rapports
+  - ajouter les **plugins jenkins Junit & Coverage**
   - rapports test / couverture configurés dans le pom.xml
   - junit pour le **plugin maven surefire**
   - recordCoverage pour **plugin maven jacoco**
@@ -47,7 +48,9 @@ pipeline {
 
 * automatiser le formatage du code selon les conventions d'éctirures spécifiées dans le manuel d'assurance qualité
   - ajouter le plugin **maven-formatter** dans le pom.xml
-  - // le fichier de config `src/main/resources/formatter.xml`
+  - configuration pom
+    + configFile -> le fichier de config `src/main/resources/formatter.xml`
+    + lineEnding -> LF (cf .gitattributes)
   - permet d'utiliser le goal `mvn formatter:format`
   - automatiser avant les commits: `.git/hooks/pre-commit`
 
@@ -82,13 +85,15 @@ docker run \
    * `http://jenkins.myusine.fr:9000` > admin / admin
    * change pour admin / roottoor
    * config manuelle
+   * nom du projet : java-app
+   * analyse: manuelle
    * token: sqp_134a4f503d3b5c19a603a07d1aa61a9d45cac250
    * snippet a priori de la connexion
 
    ```bash
    mvn clean verify sonar:sonar \
-      -Dsonar.projectKey=dev \
-      -Dsonar.host.url=http://jenkins.myusine.fr:9000 \
+      -Dsonar.projectKey=java-app \
+      -Dsonar.host.url=http://jenkins.lan:9000 \
       -Dsonar.login=sqp_134a4f503d3b5c19a603a07d1aa61a9d45cac250
    ```
 
@@ -102,11 +107,19 @@ docker run \
       - customisation des critères
       - certains critères ne peut être calculés directement par SonarQube par ex. coverage
    
+   * test en local
+     - ajouter les propriétés
+       + **sonar.host.url**
+       + **sonar.projectKey**
+       + **sonar.login**
+     - exécuter le maven sonar:sonar avec l'EDI ou
+     - `mvn sonar:sonar -f "c:\Users\<user>\<path>\workdir\pom.xml"`
+
    * configuration client (voir jenkinsfile)
       - steps avec le script mvn sonar
       - masquer les secrets avec le plugin **credentials binding** (auto)
         + création d'un crendential de type secret text
-        + directive **withCredential**
+        + directive **withCredentials**
       - compiler avant de exécuter le goal sonar
       - ajouter la config **java.binaries** pour connaitre l'emplacement des fichiers compilés
       - ajouter l'évaluation de la gate

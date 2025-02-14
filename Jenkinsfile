@@ -10,6 +10,10 @@ pipeline {
     stages {
         // une tâche
         stage('Test') {
+            // désactivation du stage pour travailler un autre job 
+            when {
+                expression { false }
+            }
             // multithreader jenkins: accélérer le job
             // parallel {
             //     stage ("unit"){ steps { sh 'mvn test -Dgroups=Unit -Dtest=!CucumberTest'}}
@@ -39,6 +43,22 @@ pipeline {
                     recordCoverage(tools: [[parser: 'JACOCO']],
                         id: 'jacoco', name: 'JaCoCo Coverage',
                         sourceCodeRetention: 'EVERY_BUILD')
+                }
+            }
+        }
+
+        stage ("QUALITY") {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'sonar_token', variable: 'SONAR_TOKEN')
+                ]) {
+                    sh '''mvn compile sonar:sonar \
+                      -Dsonar.projectKey=java-app \
+                      -Dsonar.host.url=http://jenkins.lan:9000 \
+                      -Dsonar.login=$SONAR_TOKEN \
+                      -Dsonar.java.binaries=target \
+                      -Dsonar.qualitygate.wait=true \
+                   '''
                 }
             }
         }

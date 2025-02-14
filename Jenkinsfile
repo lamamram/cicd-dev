@@ -10,6 +10,11 @@ pipeline {
     stages {
         // une tâche
         stage('Test') {
+            // multithreader jenkins: accélérer le job
+            // parallel {
+            //     stage ("unit"){ steps { sh 'mvn test -Dgroups=Unit -Dtest=!CucumberTest'}}
+            //     stage ("integration"){ steps { sh 'mvn verify -Dgroups=IT -Dtest=!CucumberTest'}}
+            // }
             // étapes d'exécution
             steps {
                 // permet d'exécuter des commandes shell
@@ -17,6 +22,7 @@ pipeline {
                 // pour les testus unitaires + integration avec mvn test : mvn clean test -Dgroups="Unit,IT" -Dtest=!CucumberTest
                 // -DskipTests: tous les tests
                 // uniquement les tests d'intégration: mvn clean verify -Dgroups=IT -Dtest=!CucumberTest
+                // multithreader maven avec -T <n> (nb de thread)
                 sh '''
                 mvn test -Dgroups="Unit,IT" -Dtest=!CucumberTest
                 '''

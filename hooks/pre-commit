@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mvn formatter:format > /dev/null
+git add .

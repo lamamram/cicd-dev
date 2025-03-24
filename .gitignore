@@ -2,6 +2,9 @@
 .vagrant/
 ## le dossier .vagrant à la racine //
 # /.vagrant/
+# uniquement dans le sous-dossir /target
+# /target/**/.vagrant/
+# ingnore infos.txt où qu'il que soit dans la copie
 infos.txt
 debug.log
 ## exception à une règle précédente SAUF règle de type "dossier"

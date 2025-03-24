@@ -18,6 +18,7 @@ Vagrant.configure(2) do |config|
   # ip = "adresse ip disponible sur le sous réseau local pour la vm (ping | nslookup pour tester)"
   # cidr = "24 (si masque réseau en 255.255.255.0)"
 
+  
   subject = "gitlab"
   image = "ml-registry/#{subject}"
 

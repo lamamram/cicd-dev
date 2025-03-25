@@ -8,8 +8,6 @@ function1_2(){
   return
 }
 
-
-content 2
-
+content 1
 
 content 3

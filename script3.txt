@@ -4,6 +4,7 @@ function3_1(){
 }
 
 function3_2(){
+  code8_bis
   code8_ter
   yield
 }

@@ -40,7 +40,7 @@ chmod 700 ~/.ssh
 
 ### créer les clés - côté client
 
-* `ssh-keygen.exe -t ecdsa -f ~/.ssh/<pkey> -N "roottoor"`
+* `ssh-keygen -t ecdsa -f ~/.ssh/<pkey> -N "roottoor"`
 * la paire de clé (pkey et pkey.pub) est logée dans le dossier `.ssh`
 * du dossier utiliseur
 * si ce dossier n'existe pas alors il sera créé automatiquement 

@@ -14,7 +14,7 @@
 ##------------------------------------------------------------------
 Vagrant.configure(2) do |config|
 
-  int = "nom de l'interface réseau connectée au routeur (ip a || ipconfig /all)"
+  int = "Intel(R) Ethernet Connection (7) I219-LM #2"
   # ip = "adresse ip disponible sur le sous réseau local pour la vm (ping | nslookup pour tester)"
   # cidr = "24 (si masque réseau en 255.255.255.0)"
 

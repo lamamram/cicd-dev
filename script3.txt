@@ -8,3 +8,8 @@ function3_2(){
   code8_ter
   yield
 }
+
+function3_3(){
+  code12
+  yield
+}

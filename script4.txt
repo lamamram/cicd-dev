@@ -4,6 +4,6 @@ fucntion_4_1(){
 }
 
 fucntion_4_2(){
-   code10_ter
+   code10_bis
    return 
 }

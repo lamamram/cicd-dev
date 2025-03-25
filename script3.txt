@@ -4,6 +4,6 @@ function3_1(){
 }
 
 function3_2(){
-  code8
-  return
+  code8_ter
+  yield
 }

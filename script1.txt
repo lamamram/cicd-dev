@@ -11,3 +11,8 @@ function1_2(){
 content 1
 
 content 3
+
+function1_3(){
+  code9
+  return
+}

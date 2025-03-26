@@ -9,4 +9,12 @@ class Account{
         $this->_id = $_id;
         $this->balance = $balance;    
     }
+
+    public function getBalance(): float {
+        return 0.;
+    }
+
+    public function withdrawal(float $amount): void {
+
+    }
 } 

@@ -1,0 +1,11 @@
+# nom arbitraire: nom du job
+test:
+  # correspondance entre le(s) tag(s) du job
+  # avec le(s) tag(s) du(es) runner(s)
+  tags:
+    - formation
+  # liste des commandes shell
+  # exécutées dans un conteneur !!!
+  script:
+    - echo "Tests !"
+  

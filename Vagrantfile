@@ -15,8 +15,8 @@
 Vagrant.configure(2) do |config|
 
   int = "Intel(R) Ethernet Connection (7) I219-LM #2"
-  # ip = "adresse ip disponible sur le sous réseau local pour la vm (ping | nslookup pour tester)"
-  # cidr = "24 (si masque réseau en 255.255.255.0)"
+  ip = "192.168.1.40"
+  cidr = "24"
 
   
   subject = "gitlab"
@@ -41,11 +41,11 @@ Vagrant.configure(2) do |config|
       machine.vm.box = "#{image}"
       machine.vm.hostname = "#{hostname}"
       ## pour travailler en bridge public et DHCP
-      machine.vm.network "public_network", bridge: "#{int}"
+      # machine.vm.network "public_network", bridge: "#{int}"
       ## pour travailler en bridge public + IP fixe
-      # machine.vm.network "public_network", bridge: "#{int}",
-      #   ip: "#{ip}",
-      #   netmask: "#{cidr}"
+      machine.vm.network "public_network", bridge: "#{int}",
+        ip: "#{ip}",
+        netmask: "#{cidr}"
 	    machine.ssh.insert_key = false
     end
   end

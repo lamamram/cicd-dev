@@ -59,7 +59,8 @@ test:
       php ./vendor/bin/phpunit 
       -c phpunit.xml
       --log-junit=test.xml 
-      --coverage-cobertura=cobertura.xml 
+      --coverage-cobertura=cobertura.xml
+      --coverage-text --colors=never
       tests
   artifacts:
     when: always

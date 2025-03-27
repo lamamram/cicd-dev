@@ -34,25 +34,31 @@ generate_deps:
     - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
       when: on_success
 
+# utilisation du registre de package générique
+# pour hoster les jeux de données volumineux
+# https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package
+## publication
+# -k: cert tls auto-signe | -L: redirects | -H: header
+# curl -k -L -H "PRIVATE-TOKEN: <personal_access_token>" \
+#      --upload-file /vagrant/project/tests/fixtures/amounts.csv \
+#      "https://gitlab.lan.fr/api/v4/projects/1/packages/generic/fixtures/0.0.1/amounts.csv"
 
 
 test:
   stage: testing
   tags:
     - formation
-  # commandes de préparation
-  # REM: on drevrait le faire avec un "docker build et un Dockerfile"
-  # installation de l'extension pcov.ini dans le conteneur
-  # il faut configurer le dossier de scrutation de pcov dans le ini
   before_script:
-    # -i: édition "inline"
-    # s|||: substitution 
     - >
       sed -i 
-      "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project/classes|g" 
+      "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
-  # commandes d'exécution
+    - >
+      curl -k -L
+      -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
+      -o project/tests/fixtures/amounts.csv
   script:
     - cd project
     - >
@@ -62,7 +68,6 @@ test:
       --coverage-cobertura=cobertura.xml
       --coverage-text --colors=never
       tests
-  # match de la couverture par les instrucitons (lines) depuis dans la console (--coverage-text)
   coverage: /^\s*Lines:\s*\d+.\d+\%/
   artifacts:
     when: always
@@ -72,14 +77,8 @@ test:
       coverage_report:
         path: project/cobertura.xml
         coverage_format: cobertura
-
   cache:
     key: deps
     untracked: true
     policy: pull
-    
-    # utilisation du registre de package générique
-    # pour hoster les jeux de données volumineux
-    # https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package
-    # - curl $CI_JOB_TOKEN https://gitlan/lan.fr/..../package/generic/data.csv -o fixture.csv
   

@@ -10,6 +10,22 @@ test:
     - cd project
     - composer install
     - php ./vendor/bin/phpunit --log-junit=test.xml tests
+  artifacts:
+    # faire remonter tous les fichier untracked => nouveaux fichiers
+    # => générés par le script !!!
+    # PAS ICI car il va faire remonter le vendor
+    # untracked: true
+
+    # on_success (par défaut): si le job en succès
+    when: always
+
+    # tout le monde 
+    # access: all 
+    expire_in: "1 hour"
+    # où est l'artefact
+    paths:
+      - project/test.xml
+    
     # utilisation du registre de package générique
     # pour hoster les jeu de donées volumineux
     # https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package

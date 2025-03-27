@@ -61,12 +61,15 @@ test:
       --log-junit=test.xml 
       --coverage-cobertura=cobertura.xml 
       tests
-    - ls -al
   artifacts:
     when: always
     expire_in: "1 hour"
     reports:
       junit: project/test.xml
+      coverage_report:
+        path: project/cobertura.xml
+        coverage_format: cobertura
+
   cache:
     key: deps
     untracked: true

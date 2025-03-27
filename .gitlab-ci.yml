@@ -1,11 +1,10 @@
-# nom arbitraire: nom du job
 test:
-  # correspondance entre le(s) tag(s) du job
-  # avec le(s) tag(s) du(es) runner(s)
+  # image locale pour ce job
+  image: thecodingmachine/php:8.2-v4-cli-node20
   tags:
     - formation
-  # liste des commandes shell
-  # exécutées dans un conteneur !!!
   script:
-    - echo "Tests !"
+    - cd project
+    - composer install
+    - php ./vendor/bin/phpunit tests
   

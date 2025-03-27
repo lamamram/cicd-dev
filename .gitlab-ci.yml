@@ -1,6 +1,14 @@
 image: thecodingmachine/php:8.2-v4-cli-node20
 
+# par défaut, gitlab runnner exécute les jobs de façon mutltithreadée
+# si l'on veut déterminer un ordre d'exécution
+# on ajoute les "stages"
+stages:
+  - caching
+  - testing
+
 generate_deps:
+  stage: caching
   tags:
     - formation
   script:
@@ -8,6 +16,7 @@ generate_deps:
     - composer install
 
 test:
+  stage: testing
   tags:
     - formation
   script:

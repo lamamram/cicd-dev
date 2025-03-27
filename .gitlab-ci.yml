@@ -7,6 +7,12 @@ stages:
   - caching
   - testing
 
+# variables d'environnements injectés dans les jobs
+# variables de types string
+variables:
+  TRIGGER_CACHE: "off"
+  
+
 generate_deps:
   stage: caching
   tags:
@@ -26,6 +32,8 @@ generate_deps:
     # on exécute quand les dépéndances changent
     - changes:
         - project/composer.json
+    # on exécute si une variable a la bonne valeur
+    - if: $TRIGGER_CACHE == "on"
 
 
 

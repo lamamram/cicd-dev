@@ -14,6 +14,15 @@ generate_deps:
   script:
     - cd project
     - composer install
+  cache:
+    key: deps
+    # on ne fait que de la génération
+    policy: push
+    # où est les dépendances ?
+    paths:
+      - project/vendor
+
+
 
 test:
   stage: testing
@@ -27,7 +36,16 @@ test:
     expire_in: "1 hour"
     reports:
       junit: project/test.xml
-      
+  cache:
+    key: deps
+    # gitlab-runner: 
+    # 1/ crée et checkout le commit sur le conteneur
+    # 2/ il installe le cache ciblé dans la copie de travail => Untracked
+    # 3/ git clean -f => plus de Untracked !!!
+    # 4/ on ajoute untracked true pour préserver le cache
+    untracked: true
+    # uniquement de l'utilisaiton de cache
+    policy: pull
     
     # utilisation du registre de package générique
     # pour hoster les jeu de donées volumineux

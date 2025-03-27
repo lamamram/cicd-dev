@@ -55,6 +55,7 @@ test:
       "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
+    # chargement des jeux de données dans l'image
     # - >
     #   curl -k -L
     #   -H "JOB-TOKEN: ${CI_JOB_TOKEN}"

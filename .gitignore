@@ -14,6 +14,7 @@ debug.log
 reports/
 /my_project/.php-cs-fixer.php
 /my_project/.php-cs-fixer.cache
+vendor/
 
 
 

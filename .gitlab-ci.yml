@@ -1,11 +1,85 @@
-# nom arbitraire: nom du job
-test:
-  # correspondance entre le(s) tag(s) du job
-  # avec le(s) tag(s) du(es) runner(s)
+image: thecodingmachine/php:8.2-v4-cli-node20
+
+stages:
+  - caching
+  - testing
+
+variables:
+  TRIGGER_CACHE: "off"
+  
+## règles du pipeline total
+## utilisation d'une variables d'environnements prédéfinies
+## https://docs.gitlab.com/ci/variables/predefined_variables/
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+
+generate_deps:
+  stage: caching
   tags:
     - formation
-  # liste des commandes shell
-  # exécutées dans un conteneur !!!
   script:
-    - echo "Tests !"
+    - cd project
+    - composer install
+  cache:
+    key: deps
+    policy: push
+    paths:
+      - project/vendor
+  rules:
+    - changes:
+        - project/composer.json
+    - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
+      when: on_success
+
+
+
+test:
+  stage: testing
+  tags:
+    - formation
+  # commandes de préparation
+  # REM: on drevrait le faire avec un "docker build et un Dockerfile"
+  # installation de l'extension pcov.ini dans le conteneur
+  # il faut configurer le dossier de scrutation de pcov dans le ini
+  before_script:
+    # -i: édition "inline"
+    # s|||: substitution 
+    - >
+      sed -i 
+      "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project/classes|g" 
+      40-pcov.ini
+    - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
+  # commandes d'exécution
+  script:
+    - cd project
+    - >
+      php ./vendor/bin/phpunit 
+      -c phpunit.xml
+      --log-junit=test.xml 
+      --coverage-cobertura=cobertura.xml
+      --coverage-text --colors=never
+      tests
+  # match de la couverture par les instrucitons (lines) depuis dans la console (--coverage-text)
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
+  artifacts:
+    when: always
+    expire_in: "1 hour"
+    reports:
+      junit: project/test.xml
+      coverage_report:
+        path: project/cobertura.xml
+        coverage_format: cobertura
+
+  cache:
+    key: deps
+    untracked: true
+    policy: pull
+    
+    # utilisation du registre de package générique
+    # pour hoster les jeux de données volumineux
+    # https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package
+    # - curl $CI_JOB_TOKEN https://gitlan/lan.fr/..../package/generic/data.csv -o fixture.csv
   

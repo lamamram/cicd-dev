@@ -1,17 +1,20 @@
 image: thecodingmachine/php:8.2-v4-cli-node20
 
-# par défaut, gitlab runnner exécute les jobs de façon mutltithreadée
-# si l'on veut déterminer un ordre d'exécution
-# on ajoute les "stages"
 stages:
   - caching
   - testing
 
-# variables d'environnements injectés dans les jobs
-# variables de types string
 variables:
   TRIGGER_CACHE: "off"
   
+## règles du pipeline total
+## utilisation d'une variables d'environnements prédéfinies
+## https://docs.gitlab.com/ci/variables/predefined_variables/
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
 
 generate_deps:
   stage: caching
@@ -22,20 +25,12 @@ generate_deps:
     - composer install
   cache:
     key: deps
-    # on ne fait que de la génération
     policy: push
-    # où est les dépendances ?
     paths:
       - project/vendor
-  # règles d'exécutions du job
-  # SI 1 règle est vraie ALORS le job s'exécute (OU logique)
   rules:
-    # on exécute quand les dépéndances changent
     - changes:
         - project/composer.json
-    # on exécute si une variable a la bonne valeur
-    # SI TOUTES les clauses de la règle sont vraies ALORS // (ET logique)
-    # opérateur possibles sur des strings ==, != , =~ (match regex), !~ (! match regex)
     - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
       when: on_success
 
@@ -55,13 +50,7 @@ test:
       junit: project/test.xml
   cache:
     key: deps
-    # gitlab-runner: 
-    # 1/ crée et checkout le commit sur le conteneur
-    # 2/ il installe le cache ciblé dans la copie de travail => Untracked
-    # 3/ git clean -f => plus de Untracked !!!
-    # 4/ on ajoute untracked true pour préserver le cache
     untracked: true
-    # uniquement de l'utilisaiton de cache
     policy: pull
     
     # utilisation du registre de package générique

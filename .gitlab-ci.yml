@@ -9,7 +9,7 @@ test:
   script:
     - cd project
     - composer install
-    - php ./vendor/bin/phpunit tests
+    - php ./vendor/bin/phpunit --log-junit=test.xml tests
     # utilisation du registre de package générique
     # pour hoster les jeu de donées volumineux
     # https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package

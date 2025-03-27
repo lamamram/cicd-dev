@@ -15,6 +15,9 @@ class Account{
     }
 
     public function withdrawal(float $amount): void {
+        if ($amount <= 0){
+            throw new ValueError($amount . ": valeur négative");
+        }
         $this->balance -= $amount;
     }
 } 

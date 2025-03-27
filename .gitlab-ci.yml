@@ -46,10 +46,11 @@ test:
   # il faut configurer le dossier de scrutation de pcov dans le ini
   before_script:
     # -i: édition "inline"
+    
     # s|||: substitution 
     - >
       sed -i 
-      "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project/classes|g" 
+      "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
   # commandes d'exécution

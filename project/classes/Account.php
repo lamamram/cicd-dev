@@ -11,10 +11,10 @@ class Account{
     }
 
     public function getBalance(): float {
-        return 0.;
+        return $this->balance;
     }
 
     public function withdrawal(float $amount): void {
-
+        $this->balance -= $amount;
     }
 } 

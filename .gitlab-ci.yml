@@ -1,6 +1,9 @@
+# image par défaut du pipeline
+image: thecodingmachine/php:8.2-v4-cli-node20
+
 test:
   # image locale pour ce job
-  image: thecodingmachine/php:8.2-v4-cli-node20
+  # image: thecodingmachine/php:8.2-v4-cli-node20
   tags:
     - formation
   script:

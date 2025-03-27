@@ -10,4 +10,8 @@ test:
     - cd project
     - composer install
     - php ./vendor/bin/phpunit tests
+    # utilisation du registre de package générique
+    # pour hoster les jeu de donées volumineux
+    # https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package
+    # - curl $CI_JOB_TOKEN https://gitlan/lan.fr/..../package/generic/data.csv -o fixture.csv
   

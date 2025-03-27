@@ -1,6 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 require_once dirname(__DIR__, 1) . "/classes/Account.php";
 
@@ -15,14 +17,11 @@ class AccountTest extends TestCase {
     //     $this->amount = -100.;
     // }
 
-    /**
-    * @return array
-    */
     public static function amountProvider()
     {
         $fixturePath = dirname(__DIR__, 1) . "/tests/fixtures/";
         $file = file_get_contents($fixturePath . "amounts.csv","r");
-        foreach ( explode("\n", $file, -1) as $line )
+        foreach ( explode("\n", $file) as $line )
         {
             $data[] = explode(',', $line);
         }
@@ -57,15 +56,14 @@ class AccountTest extends TestCase {
     //     $this->assertEquals(400., $acc->getBalance());
     // }
 
-    /**
-     * @dataProvider amountProvider
-     */
-    public function testAccountWithdrawal(string $_id, string $balance, string $amount): void
+    #[DataProvider("amountProvider")]
+    #[Test]
+    public function accountWithdrawal(string $_id, string $balance, string $amount): void
     {
         $acc = new Account((int)$_id, (float)$balance);
         if ($amount <= 0){
             $this->expectException(ValueError::class);
-            $this->acc->withdrawal((float)$amount);
+            $acc->withdrawal((float)$amount);
         }
         else {
             $acc->withdrawal((float)$amount);

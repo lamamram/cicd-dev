@@ -1,33 +1,21 @@
-# image par défaut du pipeline
 image: thecodingmachine/php:8.2-v4-cli-node20
 
-test:
-  # image locale pour ce job
-  # image: thecodingmachine/php:8.2-v4-cli-node20
+generate_deps:
   tags:
     - formation
   script:
     - cd project
     - composer install
+
+test:
+  tags:
+    - formation
+  script:
+    - cd project
     - php ./vendor/bin/phpunit --log-junit=test.xml tests
   artifacts:
-    # faire remonter tous les fichier untracked => nouveaux fichiers
-    # => générés par le script !!!
-    # PAS ICI car il va faire remonter le vendor
-    # untracked: true
-
-    # on_success (par défaut): si le job en succès
     when: always
-
-    # tout le monde 
-    # access: all 
     expire_in: "1 hour"
-    
-    # où est l'artefact: en téléchargement
-    # paths:
-    #   - project/test.xml
-    
-    # où est l'artefact SPECIAL: en incrustation dans la GUI
     reports:
       junit: project/test.xml
       

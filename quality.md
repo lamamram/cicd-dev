@@ -15,6 +15,8 @@
 > tests d'intrusion ou pentesting (kali linux + outils python) => CONTRAT
 > analyse de code statique 
 
+* configuration: `.php-cs-fixer.dist.php` dans la racine du projet
+* automatisation via un git hook `post-commit`
 
 ### installation d'un serveur
 
@@ -40,6 +42,7 @@ sonar-scanner \
 ```
 
 ### profile qualité
+
 
 1. filtrer sur PHP
 2. étendre le profile par défaut en lecture seule, en activant des règles supplémentaires 

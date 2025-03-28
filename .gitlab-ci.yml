@@ -5,6 +5,7 @@ stages:
   - testing
   - qualifying
   - staging
+  - browsing
 
 variables:
   TRIGGER_CACHE: "off"
@@ -33,7 +34,7 @@ generate_deps:
     - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
       when: on_success
 
-test:
+.test:
   stage: testing
   tags:
     - formation
@@ -92,13 +93,14 @@ test:
   
 ## job de déploiement sur un tag git
 # staging == environnement de démonstration
-staging:
+.staging:
   #image: ansible | puppet | chef | tout ce qui contient ssh scp sftp ...
   stage: staging
   tags:
     - formation
   script:
     - echo "DEPLOY!!"
+  # project > operate > Environnements
   environment:
     name: staging
     url: https://dawan.fr
@@ -109,3 +111,26 @@ staging:
     - if: $CI_COMMIT_TAG =~ /^v.*/
 
 ## job d'interface avec phpunit + selenium 
+
+e2e:
+  stage: browsing
+  tags:
+    - formation
+  services:
+    - name: selenium/standalone-firefox:133.0-geckodriver-0.35
+      # alias réseau == DNS connu dans le réseau docker donc dans le client !
+      alias: selenium-server
+  # installation du driver (côté client)
+  before_script:
+    - sudo tar xzf geckodriver-v0.35.0-linux64.tar.gz -C /usr/local/bin
+    - sudo chmod u+x /usr/local/bin/geckodriver
+  script:
+    - cd project
+    - >
+      php ./vendor/bin/phpunit 
+      -c phpunit.xml
+      tests/SearchE2ETest.php
+  cache:
+    key: deps
+    untracked: true
+    policy: pull

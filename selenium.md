@@ -17,12 +17,13 @@ docker run \
        selenium/standalone-firefox:133.0-geckodriver-0.35
 ```
 
-* ou dans gitlab avec un **service**
+* ou dans gitlab avec un **service** à la volée puisque le serveur est complètement
+* configuré depuis le client
 
 ```yaml
 services:
-  name: selenium/standalone-firefox:133.0-geckodriver-0.35
-  alias: selenium-server
+  - name: selenium/standalone-firefox:133.0-geckodriver-0.35
+    alias: selenium-server
 ```
 
 ## installation du driver
@@ -37,4 +38,10 @@ services:
 ## création & exécution des scripts
 
 * avec PHPUnit et la librairie PHP selenium
+
+```bash
+cd project
+composer require --dev facebook/webdriver
+```
+
 * attention au scope: différencier les tests E2E et les tests Unit et IT

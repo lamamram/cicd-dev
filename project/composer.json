@@ -1,7 +1,7 @@
 {
     "require-dev": {
         "phpunit/phpunit": "^11.5",
-        "facebook/webdriver": "^1.1",
+        "php-webdriver/webdriver": "^1.1",
         "friendsofphp/php-cs-fixer": "^3.74"
     }
 }

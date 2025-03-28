@@ -49,6 +49,7 @@ generate_deps:
     - >
       php ./vendor/bin/phpunit 
       -c phpunit.xml
+      --group Unit
       --log-junit=test.xml 
       --coverage-cobertura=cobertura.xml
       --coverage-clover=clover.xml
@@ -129,7 +130,8 @@ e2e:
     - >
       php ./vendor/bin/phpunit 
       -c phpunit.xml
-      tests/SearchE2ETest.php
+      --group E2E
+      tests
   cache:
     key: deps
     untracked: true

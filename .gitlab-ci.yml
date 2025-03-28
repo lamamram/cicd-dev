@@ -3,6 +3,7 @@ image: thecodingmachine/php:8.2-v4-cli-node20
 stages:
   - caching
   - testing
+  - qualifying
 
 variables:
   TRIGGER_CACHE: "off"
@@ -54,11 +55,11 @@ test:
       "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
-    - >
-      curl -k -L
-      -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
-      -o project/tests/fixtures/amounts.csv
+    # - >
+    #   curl -k -L
+    #   -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
+    #   "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
+    #   -o project/tests/fixtures/amounts.csv
   script:
     - cd project
     - >
@@ -66,12 +67,17 @@ test:
       -c phpunit.xml
       --log-junit=test.xml 
       --coverage-cobertura=cobertura.xml
+      --coverage-clover=clover.xml
       --coverage-text --colors=never
       tests
   coverage: /^\s*Lines:\s*\d+.\d+\%/
   artifacts:
     when: always
     expire_in: "1 hour"
+    # remontée dans gitlab en téléchargement
+    # ET transfert par défaut dans les jobs suivants
+    paths:
+      - project/clover.xml
     reports:
       junit: project/test.xml
       coverage_report:
@@ -81,4 +87,36 @@ test:
     key: deps
     untracked: true
     policy: pull
+
+# exécution de la qualité APRES les tests
+# car le job doit être bloquant et un critère important est la couverture de code
+# qui vient du job test !!
+sonar:
+  stage: qualifying
+  image:
+    name: sonarsource/sonar-scanner-cli:11
+    # neutralisation du entrypoint par défaut de l'image
+    #  cette commande parasite le lancement du job avec gitlab !!
+    entrypoint: [""]
+  tags:
+    - formation
+  script:
+    # SONAR_TOKEN vient d'une variable cachée dans gitlab
+    # project > settings > CI/CD > Variables > add variables
+    # variable > Masked & Hidden > unchecked "protected"
+    ## !! atention au scope sinon l'analyse peut péter avec le dossier vendor
+    - >
+      sonar-scanner
+      -Dsonar.projectKey=project
+      -Dsonar.sources=./project
+      -Dsonar.exclusions=./project/vendor
+      -Dsonar.coverage.exclusions=**/tests/**
+      -Dsonar.php.coverage.reportPaths=./project/clover.xml
+      -Dsonar.host.url=http://gitlab.lan.fr:9000
+      -Dsonar.login=$SONAR_TOKEN
+      -Dsonar.qualitygate.wait=true
+
   
+## job de déploiement sur un tag git
+
+## job d'interface avec phpunit + selenium 

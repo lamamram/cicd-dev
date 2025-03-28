@@ -1,0 +1,17 @@
+#!/bin/bash
+
+ROOT_DIR="project"
+PHP_CS_FIXER="$ROOT_DIR/vendor/bin/php-cs-fixer"
+
+# çà fonctionne avec ce qui se trouve dans l'index
+# attention au M pas dans l'index
+# git add .: oui
+# git add parcellaire: attention
+# --porcelain: pas de couleur => pas de markup !!!
+git status --porcelain | grep -E "^ ?[AM](.*)\.php$" | sed -E 's/^ ?[AM]\s*//' |
+# TODO : regarder le git diff --cached à la place du status
+while read line; do
+  $PHP_CS_FIXER fix --config="$ROOT_DIR/.php-cs-fixer.dist.php" --quiet "$line"
+  ## quand le fichier est formatté selon les règles du fichier de config
+  git add "$line"
+done

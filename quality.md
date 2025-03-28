@@ -53,3 +53,4 @@ sonar-scanner \
 
 * [paramètres](https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/)
 * [definitions de métriques](https://docs.sonarsource.com/sonarqube-server/9.8/user-guide/metric-definitions/#quality-gates)
+* [scope](https://docs.sonarsource.com/sonarqube-server/8.9/project-administration/narrowing-the-focus/)

@@ -109,7 +109,8 @@ sonar:
       sonar-scanner
       -Dsonar.projectKey=project
       -Dsonar.sources=./project
-      -Dsonar.exclusions=./project/vendor
+      -Dsonar.exclusions=./project/vendor,**/tests/**
+      -Dsonar.coverage.exclusions=**/tests/**
       -Dsonar.php.coverage.reportPaths=./project/clover.xml
       -Dsonar.host.url=http://gitlab.lan.fr:9000
       -Dsonar.login=$SONAR_TOKEN

@@ -188,6 +188,18 @@ git push origin main
 > *car le commit "alt update" déjà poussé sur le dépôt distant*
 > *n'a pas de relation enfant <=> parent avec le premier*
 
+```text
+hint: Diverging branches can't be fast-forwarded, you need to either:
+hint: 
+hint:   git merge --no-ff
+hint: 
+hint: or:
+hint: 
+hint:   git rebase
+hint: 
+hint: Disable this message with "git config advice.diverging false"
+```
+
 ---
 
 #### résolution

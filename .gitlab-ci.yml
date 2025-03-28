@@ -4,13 +4,11 @@ stages:
   - caching
   - testing
   - qualifying
+  - staging
 
 variables:
   TRIGGER_CACHE: "off"
-  
-## règles du pipeline total
-## utilisation d'une variables d'environnements prédéfinies
-## https://docs.gitlab.com/ci/variables/predefined_variables/
+
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -35,16 +33,6 @@ generate_deps:
     - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
       when: on_success
 
-# utilisation du registre de package générique
-# pour hoster les jeux de données volumineux
-# https://archives.docs.gitlab.com/17.7/ee/user/packages/generic_packages/index.html#publish-a-package
-## publication
-# -k: cert tls auto-signe | -L: redirects | -H: header
-# curl -k -L -H "PRIVATE-TOKEN: <personal_access_token>" \
-#      --upload-file /vagrant/project/tests/fixtures/amounts.csv \
-#      "https://gitlab.lan.fr/api/v4/projects/1/packages/generic/fixtures/0.0.1/amounts.csv"
-
-
 test:
   stage: testing
   tags:
@@ -55,12 +43,6 @@ test:
       "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
-    # chargement des jeux de données dans l'image
-    # - >
-    #   curl -k -L
-    #   -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
-    #   "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
-    #   -o project/tests/fixtures/amounts.csv
   script:
     - cd project
     - >
@@ -75,8 +57,6 @@ test:
   artifacts:
     when: always
     expire_in: "1 hour"
-    # remontée dans gitlab en téléchargement
-    # ET transfert par défaut dans les jobs suivants
     paths:
       - project/clover.xml
     reports:
@@ -89,23 +69,15 @@ test:
     untracked: true
     policy: pull
 
-# exécution de la qualité APRES les tests
-# car le job doit être bloquant et un critère important est la couverture de code
-# qui vient du job test !!
-sonar:
+# préfixer un job avec "." => le job est désactivé
+.sonar:
   stage: qualifying
   image:
     name: sonarsource/sonar-scanner-cli:11
-    # neutralisation du entrypoint par défaut de l'image
-    #  cette commande parasite le lancement du job avec gitlab !!
     entrypoint: [""]
   tags:
     - formation
   script:
-    # SONAR_TOKEN vient d'une variable cachée dans gitlab
-    # project > settings > CI/CD > Variables > add variables
-    # variable > Masked & Hidden > unchecked "protected"
-    ## !! atention au scope sinon l'analyse peut péter avec le dossier vendor
     - >
       sonar-scanner
       -Dsonar.projectKey=project
@@ -119,5 +91,21 @@ sonar:
 
   
 ## job de déploiement sur un tag git
+# staging == environnement de démonstration
+staging:
+  #image: ansible | puppet | chef | tout ce qui contient ssh scp sftp ...
+  stage: staging
+  tags:
+    - formation
+  script:
+    - echo "DEPLOY!!"
+  environment:
+    name: staging
+    url: https://dawan.fr
+  ## qui déploie ?
+  rules:
+    # UN TAG de forme "v*"
+    # project > settings > Repository > protected Tags > add Tag
+    - if: $CI_COMMIT_TAG =~ /^v.*/
 
 ## job d'interface avec phpunit + selenium 

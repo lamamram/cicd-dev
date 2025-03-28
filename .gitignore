@@ -12,8 +12,9 @@ debug.log
 # !.vagrant/debug.log
 [sS]amples/
 reports/
-/my_project/.php-cs-fixer.php
-/my_project/.php-cs-fixer.cache
+/project/.php-cs-fixer.php
+.php-cs-fixer.cache
+.phpunit.cache/
 vendor/
 
 

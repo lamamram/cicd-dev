@@ -1,32 +1,43 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\CoversClass;
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-require_once dirname(__DIR__, 1) . "/classes/Account.php";
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+
+require_once dirname(__DIR__, 1).'/classes/Account.php';
 
 #[CoversClass(Account::class)]
-class AccountTest extends TestCase {
+class AccountTest extends TestCase
+{
     private Account $acc;
     private float $amount;
 
-    //fixture exécutée avant chaque méthode de test
+    // fixture exécutée avant chaque méthode de test
     // public function setUp(): void {
-    //     // Arrange: Given de l'issue 
+    //     // Arrange: Given de l'issue
     //     $this->acc = new Account(345354353, 500.);
     //     $this->amount = -100.;
     // }
 
     public static function amountProvider()
     {
-        $fixturePath = dirname(__DIR__, 1) . "/tests/fixtures/";
-        $file = file_get_contents($fixturePath . "amounts.csv","r");
-        foreach ( explode("\n", $file) as $line )
-        {
+        $fixturePath = dirname(__DIR__, 1).'/tests/fixtures/';
+        $file = file_get_contents($fixturePath.'amounts.csv', 'r');
+        foreach (explode("\n", $file) as $line) {
             $data[] = explode(',', $line);
         }
+
         return $data;
     }
 
@@ -34,7 +45,7 @@ class AccountTest extends TestCase {
     //     $this->assertTrue(true);
     //     return new Account(345354353, 500.);
     // }
-    
+
     // méthode de test avec setUp
     // public function testAccountWithdrawal(): void
     // {
@@ -58,22 +69,21 @@ class AccountTest extends TestCase {
     //     $this->assertEquals(400., $acc->getBalance());
     // }
 
-    #[DataProvider("amountProvider")]
+    #[DataProvider('amountProvider')]
     #[Test]
+    #[Group("Unit")]
     public function accountWithdrawal(string $_id, string $balance, string $amount): void
     {
-        $acc = new Account((int)$_id, (float)$balance);
-        if ($amount <= 0){
+        $acc = new Account((int) $_id, (float) $balance);
+        if ($amount <= 0) {
             $this->expectException(ValueError::class);
-            $acc->withdrawal((float)$amount);
-        }
-        else {
-            $acc->withdrawal((float)$amount);
-            $this->assertEquals($balance - $amount, $acc->getBalance());
+            $acc->withdrawal((float) $amount);
+        } else {
+            $acc->withdrawal((float) $amount);
+            $this->assertSame($balance - $amount, $acc->getBalance());
         }
     }
-    
-    
+
     // public function tearDown(): void {
     //     // libération des variables après test
     //     // fermer les cnx (sockets) & fichiers (memory leaks!!)

@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
   image = "ml-registry/#{subject}"
 
   [
-    ["#{subject}.lan.fr", "8192", "4"],
+    ["#{subject}.lan.fr", "10000", "4"],
   ].each do |hostname,mem,cpus|
     config.vm.define "#{hostname}" do |machine|
 

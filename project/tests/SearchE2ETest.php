@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Firefox\FirefoxOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
@@ -26,12 +26,12 @@ final class SearchE2ETest extends TestCase
     {
         // port 4444 + /wd/hub pour une image (standalone)
         $url = 'http://selenium-server:4444/wd/hub';
-        $desiredCapabilities = DesiredCapabilities::chrome();
+        $desiredCapabilities = DesiredCapabilities::firefox();
         $desiredCapabilities->setPlatform(WebDriverPlatform::LINUX);
-        $chromeOptions = new ChromeOptions();
+        $firefoxOptions = new FirefoxOptions();
         // obligatoire pour un serveur sous docker, pas de GUI !!!
-        $chromeOptions->addArguments(['-headless']);
-        $desiredCapabilities->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
+        $firefoxOptions->addArguments(['-headless']);
+        $desiredCapabilities->setCapability(FirefoxOptions::CAPABILITY, $firefoxOptions);
         $this->driver = RemoteWebDriver::create($url, $desiredCapabilities);
     }
 

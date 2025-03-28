@@ -117,13 +117,13 @@ e2e:
   tags:
     - formation
   services:
-    - name: selenium/standalone-chrome
+    - name: selenium/standalone-firefox
       # alias réseau == DNS connu dans le réseau docker donc dans le client !
       alias: selenium-server
   # installation du driver (côté client)
   before_script:
-    - sudo unzip chromedriver.zip -d /usr/local/bin
-    - sudo chmod u+x /usr/local/bin/chromedriver
+    - sudo tar xzf geckodriver-v0.35.0-linux64.tar.gz -C /usr/local/bin
+    - sudo chmod u+x /usr/local/bin/geckodriver
   script:
     - cd project
     - >

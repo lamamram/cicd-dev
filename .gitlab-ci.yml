@@ -109,11 +109,13 @@ sonar:
       sonar-scanner
       -Dsonar.projectKey=project
       -Dsonar.sources=./project
-      -Dsonar.exclusions=./project/vendor,**/tests/**
+      -Dsonar.exclusions=./project/vendor
       -Dsonar.coverage.exclusions=**/tests/**
       -Dsonar.php.coverage.reportPaths=./project/clover.xml
       -Dsonar.host.url=http://gitlab.lan.fr:9000
       -Dsonar.login=$SONAR_TOKEN
+      -Dsonar.qualitygate.wait=true
+
   
 ## job de déploiement sur un tag git
 

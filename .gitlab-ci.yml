@@ -55,11 +55,11 @@ test:
       "s|pcov.directory = __DIR__|pcov.directory = $CI_PROJECT_DIR/project|g" 
       40-pcov.ini
     - sudo mv 40-pcov.ini /etc/php/8.2/cli/conf.d/
-    - >
-      curl -k -L
-      -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
-      -o project/tests/fixtures/amounts.csv
+    # - >
+    #   curl -k -L
+    #   -H "JOB-TOKEN: ${CI_JOB_TOKEN}"
+    #   "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fixtures/0.0.1/amounts.csv"
+    #   -o project/tests/fixtures/amounts.csv
   script:
     - cd project
     - >
@@ -67,12 +67,17 @@ test:
       -c phpunit.xml
       --log-junit=test.xml 
       --coverage-cobertura=cobertura.xml
+      --coverage-clover=clover.xml
       --coverage-text --colors=never
       tests
   coverage: /^\s*Lines:\s*\d+.\d+\%/
   artifacts:
     when: always
     expire_in: "1 hour"
+    # remontée dans gitlab en téléchargement
+    # ET transfert par défaut dans les jobs suivants
+    paths:
+      - project/clover.xml
     reports:
       junit: project/test.xml
       coverage_report:
@@ -105,7 +110,10 @@ sonar:
       -Dsonar.projectKey=project
       -Dsonar.sources=./project
       -Dsonar.exclusions=./project/vendor
+      -Dsonar.php.coverage.reportPaths=./project/clover.xml
       -Dsonar.host.url=http://gitlab.lan.fr:9000
       -Dsonar.login=$SONAR_TOKEN
   
-  
+## job de déploiement sur un tag git
+
+## job d'interface avec phpunit + selenium 

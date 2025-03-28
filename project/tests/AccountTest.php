@@ -11,6 +11,7 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -70,6 +71,7 @@ class AccountTest extends TestCase
 
     #[DataProvider('amountProvider')]
     #[Test]
+    #[Group("Unit")]
     public function accountWithdrawal(string $_id, string $balance, string $amount): void
     {
         $acc = new Account((int) $_id, (float) $balance);

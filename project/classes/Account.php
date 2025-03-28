@@ -1,7 +1,6 @@
 
 <?php
 
-use PHPUnit\Framework\Attributes\Group;
 
 class Account
 {
@@ -19,7 +18,6 @@ class Account
         return $this->balance;
     }
 
-    #[Group("Unit")]
     public function withdrawal(float $amount): void
     {
         if ($amount <= 0) {

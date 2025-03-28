@@ -34,7 +34,7 @@ generate_deps:
     - if: $TRIGGER_CACHE == "on" # /[]{2}.*$/
       when: on_success
 
-.test:
+test:
   stage: testing
   tags:
     - formation
